@@ -152,27 +152,23 @@ function homeScene(maneuver) {
     `<animateMotion dur="7s" repeatCount="indefinite" rotate="${rev ? 'auto-reverse' : 'auto'}" keyPoints="0;0;1;1" keyTimes="0;0.12;0.88;1" calcMode="spline" keySplines="0 0 1 1;0.45 0 0.35 1;0 0 1 1"><mpath href="#homePath"/></animateMotion>`;
   const still = reduceMotion ? 'transform="translate(217 600) rotate(-90)"' : '';
   return `<div class="home-scene" data-part="${part}" aria-hidden="true">
-  <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid meet">
+  <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid meet"><g transform="translate(0 -130)">
     <rect x="-1400" y="-800" width="3200" height="2600" fill="var(--sc-ground)"/>
     <rect x="-1400" y="-800" width="1546" height="1096" rx="22" fill="var(--sc-block)"/>
     <rect x="244" y="-800" width="1560" height="1096" rx="22" fill="var(--sc-block)"/>
     <rect x="-1400" y="396" width="1546" height="1400" rx="22" fill="var(--sc-block)"/>
     <rect x="244" y="396" width="1560" height="1400" rx="22" fill="var(--sc-block)"/>
-    <circle cx="60" cy="470" r="22" fill="var(--sc-tree)"/><circle cx="104" cy="520" r="16" fill="var(--sc-tree)"/>
-    <circle cx="320" cy="120" r="24" fill="var(--sc-tree)"/><circle cx="290" cy="200" r="15" fill="var(--sc-tree)"/>
-    <circle cx="330" cy="640" r="20" fill="var(--sc-tree)"/><circle cx="72" cy="150" r="18" fill="var(--sc-tree)"/>
     <rect x="152" y="-800" width="86" height="2600" fill="var(--sc-road)"/>
     <rect x="-1400" y="300" width="3200" height="92" fill="var(--sc-road)"/>
     <path d="M195 -800V270M195 420V1800M-1400 346H122M268 346H1800" stroke="var(--sc-paint)" stroke-width="2.5" stroke-dasharray="18 16"/>
     <rect x="197" y="402" width="40" height="5" fill="var(--sc-paint)"/>
-    <g fill="var(--sc-paint)" opacity=".9">${[0, 1, 2, 3, 4, 5].map((i) => `<rect x="${158 + i * 12}" y="276" width="6" height="18"/>`).join('')}${[0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="128" y="${306 + i * 12}" width="18" height="6"/>`).join('')}</g>
     <path id="homePath" d="${d}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 9" opacity=".9"/>
     <g ${still}><g>
       <rect x="-22" y="-12" width="44" height="24" rx="7" fill="var(--accent)"/>
       <rect x="${rev ? -16 : 4}" y="-8" width="10" height="16" rx="3" fill="var(--sc-glass)"/>
       ${motion}
     </g></g>
-  </svg></div>`;
+  </g></svg></div>`;
 }
 
 function maneuverOf(id) {
@@ -310,55 +306,53 @@ function routeCard() {
 }
 
 function viewHome() {
-  const s = store.get();
   const cur = currentStage();
-  const streak = liveStreak();
-  const code = LANGUAGES.find((l) => l.code === s.lang);
-  let featured, cta, kicker;
-  if (cur.exam) {
-    featured = 'dir.cornerLeft';
-    cta = `<button class="btn btn-primary btn-block" data-a="exam">${esc(t('exam.begin'))}</button>`;
-    kicker = t('stage.exam');
-  } else {
+  let featured, label;
+  if (cur.exam) { featured = 'dir.cornerLeft'; label = t('exam.begin'); }
+  else {
     const p = stageProgress(cur.id);
-    const lesson = lessonsOf(cur.id)[p.done];
-    featured = lesson.ids[0];
-    cta = `<button class="btn btn-primary btn-block" data-a="start">${esc(p.done ? t('home.continue') : t('home.start'))}</button>`;
-    kicker = t(`stage.${cur.id}`);
+    featured = lessonsOf(cur.id)[p.done].ids[0];
+    label = p.done ? t('home.continue') : t('home.start');
   }
+  const n = stageIndex(cur.id) + 1;
   render(`${homeScene(maneuverOf(featured))}
   <main class="home-ui">
     <div class="bar">
       <span class="brand">${mark(24)} Roadword ${flag(18)}</span>
-      <span class="chips">
-        <button class="chip" data-a="lang" aria-label="${esc(t('set.language'))}">${UI.globe}<span>${esc(code ? code.code.split('-')[0].toUpperCase() : 'EN')}</span></button>
-        <span class="chip" aria-label="${esc(t('pro.streak'))}: ${streak}">${UI.flame}<span>${streak}</span></span>
-      </span>
+      <button class="step-pill glass" data-a="stages" aria-label="${esc(t('home.stopOf', { n, total: STAGES.length }))}">${routeDots(cur)}<span>${n}/${STAGES.length}</span></button>
     </div>
-    ${routeCard()}
     <div class="spacer"></div>
     <section class="lesson-card glass" aria-label="${esc(t('home.today'))}">
-      <div class="card-row">
-        <span class="kicker">${esc(kicker)} <button class="icon-btn" style="width:32px;height:32px" data-a="info" aria-label="${esc(t('gen.more'))}">${UI.info}</button></span>
-        ${playButton(featured)}
+      <button class="kicker" data-a="info">${esc(t(`stage.${cur.id}`))}</button>
+      <div class="cmd-row">
+        <p class="cmd" lang="en">${esc(phraseEn(featured))}</p>
+        ${playButton(featured, 'play-big')}
       </div>
-      <p class="cmd" lang="en">${esc(phraseEn(featured))}</p>
-      ${isEnglishUi() ? '<div style="height:12px"></div>' : `<p class="cmd-tr">${esc(phraseNative(featured))}</p>`}
-      ${cta}
+      ${isEnglishUi() ? '' : `<p class="cmd-tr">${esc(phraseNative(featured))}</p>`}
+      <button class="btn btn-primary btn-block" data-a="${cur.exam ? 'exam' : 'start'}">${esc(label)}</button>
     </section>
-    <div class="quick">
-      <button class="glass" data-a="practice">${UI.bolt}<span>${esc(t('home.practice'))}</span></button>
-      <button class="glass" data-a="phrases">${UI.book}<span>${esc(t('home.phrases'))}</span></button>
-    </div>
   </main>`, { tabs: 'home' });
   on('play', (el) => playWithPulse(el));
   on('start', () => startLesson(cur.id));
   on('exam', () => go('exam'));
-  on('practice', () => startPractice('mixed'));
-  on('phrases', () => go('phrases'));
   on('stages', () => stagesSheet());
-  on('lang', () => languageSheet());
   on('info', () => infoSheet(cur.id));
+}
+
+function routeDots(cur) {
+  return `<span class="mini-track" aria-hidden="true">${STAGES.map((s) => {
+    const done = s.exam ? store.get().examBest >= EXAM_PASS : stageProgress(s.id).complete;
+    return `<i class="${done ? 'done' : s.id === cur.id ? 'now' : ''}"></i>`;
+  }).join('')}</span>`;
+}
+
+// Light illustration shown above each exercise
+function heroVisual(id) {
+  const p = phrase(id);
+  const fallback = { talk: 'icon:talk', res: 'icon:flag', lane: 'scene:laneRight', park: 'scene:backUp' };
+  const key = p.visual || fallback[p.stage] || 'icon:car';
+  if (key.startsWith('scene:')) return `<div class="hero-visual">${visual(key, { animate: !reduceMotion, dur: 3.2 })}</div>`;
+  return `<div class="hero-visual is-icon">${icon(key.split(':')[1], 56)}</div>`;
 }
 
 function infoSheet(stageId) {
@@ -478,7 +472,7 @@ function exListen(item) {
     });
   });
   return `<h1 class="prompt">${esc(t('ex.listen'))}</h1>
-    ${p.visual && p.visual.startsWith('scene:') ? `<div class="stage-visual">${visual(p.visual, { animate: !reduceMotion })}</div>` : ''}
+    ${heroVisual(item.id)}
     ${audioRow(item.id, { showText: nativeOpts })}
     <div class="options">${opts}</div>${footer()}`;
 }
@@ -527,6 +521,7 @@ function exBuild(item) {
     });
   });
   return `<h1 class="prompt">${esc(t('ex.build'))}</h1>
+    ${heroVisual(item.id)}
     ${audioRow(item.id, { showText: false })}
     ${isEnglishUi() ? '' : `<p class="reveal" style="color:var(--ink-2);font-size:var(--t-md)">${esc(phraseNative(item.id))}</p>`}
     <div class="build-answer" id="ans" aria-live="polite"></div>
@@ -562,6 +557,7 @@ function exSpeak(item) {
     on('cant', () => { session.noSpeak = true; skipItem(); });
   });
   return `<h1 class="prompt">${esc(t('ex.speak'))}</h1>
+    ${heroVisual(item.id)}
     <div class="audio-row">${playButton(item.id)}<button class="play-sm" data-a="slow" data-id="${item.id}" aria-label="${esc(t('ex.playSlow'))}">${UI.slow}</button></div>
     <p class="marks" id="marks" lang="en">${esc(phraseEn(item.id))}</p>
     ${isEnglishUi() ? '' : `<p style="color:var(--ink-2)">${esc(phraseNative(item.id))}</p>`}
@@ -744,6 +740,7 @@ function viewPractice() {
     <div class="list">
       <button class="row" data-a="mixed"><span style="display:flex;gap:12px;align-items:center">${UI.bolt}<b>${esc(t('prc.quick'))}</b></span>${UI.chevron}</button>
       <button class="row" data-a="listen"><span style="display:flex;gap:12px;align-items:center">${UI.speaker}<b>${esc(t('prc.listenOnly'))}</b></span>${UI.chevron}</button>
+      <button class="row" data-a="book"><span style="display:flex;gap:12px;align-items:center">${UI.book}<b>${esc(t('home.phrases'))}</b></span>${UI.chevron}</button>
       ${canListen() && store.get().mic !== 'denied' ? `<button class="row" data-a="speak"><span style="display:flex;gap:12px;align-items:center">${UI.mic.replace('width="32" height="32"', 'width="22" height="22"')}<b>${esc(t('prc.speakOnly'))}</b></span>${UI.chevron}</button>` : ''}
     </div>
     <h2 class="section-label">${esc(t('prc.weak'))}</h2>
@@ -752,6 +749,7 @@ function viewPractice() {
   on('mixed', () => startPractice('mixed'));
   on('listen', () => startPractice('listen'));
   on('speak', () => startPractice('speak'));
+  on('book', () => go('phrases'));
   on('play', (el) => playWithPulse(el));
 }
 
