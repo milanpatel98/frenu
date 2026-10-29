@@ -6,8 +6,9 @@
     "dir": "ltr"
   },
   "ui": {
+    "app.badge": "美国驾照路考",
+    "app.badgeSub": "DMV 路考",
     "app.tagline": "路考英语，用你的母语来学。",
-
     "onb.welcome": "听懂考官会说的每一句话。",
     "onb.chooseLanguage": "你的语言",
     "onb.searchLanguage": "搜索语言",
@@ -22,7 +23,6 @@
     "onb.agree": "我同意使用条款和隐私政策",
     "onb.start": "开始学习",
     "onb.agreeFirst": "请先勾选同意。",
-
     "home.hello": "你好，{name}",
     "home.helloNoName": "你好",
     "home.today": "今日课程",
@@ -37,11 +37,9 @@
     "home.streak": "{n} 天",
     "home.streakOne": "1 天",
     "home.allDone": "所有站点已完成，继续保持练习。",
-
     "nav.home": "首页",
     "nav.practice": "练习",
     "nav.profile": "我的",
-
     "stage.car": "车辆检查",
     "stage.car.info": "开车前，考官会先检查车辆。你需要展示喇叭、雨刮器和手势信号等操作。",
     "stage.dir": "方向指示",
@@ -56,7 +54,6 @@
     "stage.res.info": "考试后你可能听到的评语，以及通过或未通过。",
     "stage.exam": "模拟考试",
     "stage.exam.info": "没有翻译，和真实考试一样。认真听，及时反应。",
-
     "ex.listen": "这是什么意思？",
     "ex.act": "你应该怎么做？",
     "ex.build": "拼出你听到的句子",
@@ -84,14 +81,12 @@
     "ex.micBlocked": "麦克风已关闭。请在浏览器设置中开启，或跳过口语练习。",
     "ex.micUnsupported": "口语练习支持 Safari 和 Chrome。",
     "ex.clear": "清除",
-
     "done.title": "课程完成",
     "done.xp": "+{n} XP",
     "done.accuracy": "正确率",
     "done.time": "用时",
     "done.next": "下一课",
     "done.home": "返回首页",
-
     "exam.title": "模拟考试",
     "exam.intro": "没有翻译，和真实考试一样。",
     "exam.begin": "开始考试",
@@ -102,18 +97,15 @@
     "exam.passBody": "你听懂了 {total} 条指令中的 {n} 条。",
     "exam.failBody": "你听懂了 {total} 条中的 {n} 条。去练习没听懂的那些吧。",
     "exam.retry": "再试一次",
-
     "phr.title": "短语手册",
     "phr.search": "搜索短语",
     "phr.empty": "没有找到相关短语。",
-
     "prc.title": "练习",
     "prc.weak": "你的薄弱短语",
     "prc.weakEmpty": "还没有薄弱短语。先完成一节课吧。",
     "prc.quick": "快速练习",
     "prc.listenOnly": "只练听力",
     "prc.speakOnly": "只练口语",
-
     "set.title": "设置",
     "set.speed": "语速",
     "set.slow": "慢",
@@ -142,13 +134,11 @@
     "set.on": "开",
     "set.off": "关",
     "set.saved": "已保存",
-
     "pro.title": "我的",
     "pro.xp": "总 XP",
     "pro.streak": "连续学习",
     "pro.learned": "已学短语",
     "pro.ready": "考试准备度",
-
     "info.title": "使用说明",
     "info.p1": "Roadword 教你加州路考考官实际使用的英语短语。",
     "info.p2": "每一站都有简短的课程。你会听、选择、拼句并说出每个短语。",
@@ -156,7 +146,6 @@
     "info.p4": "本应用与加州 DMV（机动车管理局）没有任何关联。",
     "info.source": "短语依据 DMV 考官用语表（DL 80）。",
     "info.close": "关闭",
-
     "gen.back": "返回",
     "gen.close": "关闭",
     "gen.offline": "你已离线，课程仍可使用。",
@@ -181,7 +170,6 @@
     "car.wipers": "怎么打开雨刮器？",
     "car.defroster": "怎么打开除雾/除霜功能？",
     "car.auto": "你的车有没有配备自动驾驶辅助技术？",
-
     "dir.cornerLeft": "在路口左转。",
     "dir.cornerRight": "在路口右转。",
     "dir.lightLeft": "在下一个红绿灯左转。",
@@ -189,7 +177,6 @@
     "dir.stopRight": "在停车标志处右转。",
     "dir.straight": "继续直行。",
     "dir.follow": "如果我没说转弯，就沿着前面的路继续开。",
-
     "lane.left": "向左变道。",
     "lane.right": "向右变道。",
     "lane.necessary": "根据我的指示，需要时自行变道。",
@@ -197,7 +184,6 @@
     "lane.curb": "把车停到路边。",
     "lane.back": "安全时，重新开回车流中。",
     "lane.safe": "所有操作都只在安全时进行。",
-
     "park.backUp": "直线倒车。",
     "park.keepGoing": "继续。",
     "park.okStop": "好，停。",
@@ -207,14 +193,12 @@
     "park.inPark": "挂到 P 挡（驻车挡）。",
     "park.engineOff": "关掉引擎。",
     "park.dmv": "开回 DMV。",
-
     "talk.evaluated": "我们会评估你安全驾驶的能力。",
     "talk.trick": "我不会故意为难你，也不会要求你做任何违法的事。",
     "talk.questions": "你有什么问题吗？",
     "talk.seatbelt": "系好安全带。",
     "talk.noAuto": "不要使用定速巡航或其他自动驾驶功能。",
     "talk.repeat": "请您再说一遍好吗？",
-
     "res.blindSpot": "你没有检查盲区。",
     "res.bothWays": "你没有左右观察。",
     "res.tooFast": "你开得太快了。",

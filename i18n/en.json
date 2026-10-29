@@ -6,8 +6,9 @@
     "dir": "ltr"
   },
   "ui": {
+    "app.badge": "U.S. driving test",
+    "app.badgeSub": "DMV behind-the-wheel test",
     "app.tagline": "The English of your drive test, in your language.",
-
     "onb.welcome": "Learn what the examiner will say.",
     "onb.chooseLanguage": "Your language",
     "onb.searchLanguage": "Search languages",
@@ -22,7 +23,6 @@
     "onb.agree": "I agree to the Terms and Privacy Policy",
     "onb.start": "Start learning",
     "onb.agreeFirst": "Check the box to agree first.",
-
     "home.hello": "Hi, {name}",
     "home.helloNoName": "Hi",
     "home.today": "Today's lesson",
@@ -37,11 +37,9 @@
     "home.streak": "{n} days",
     "home.streakOne": "1 day",
     "home.allDone": "All stops done. Keep practicing.",
-
     "nav.home": "Home",
     "nav.practice": "Practice",
     "nav.profile": "Profile",
-
     "stage.car": "The car",
     "stage.car.info": "Before you drive, the examiner checks the car. You show controls like the horn, wipers, and arm signals.",
     "stage.dir": "Directions",
@@ -56,7 +54,6 @@
     "stage.res.info": "Comments you may hear after the test, and pass or fail.",
     "stage.exam": "Mock exam",
     "stage.exam.info": "No translations, just like the real test. Listen and react.",
-
     "ex.listen": "What does it mean?",
     "ex.act": "What do you do?",
     "ex.build": "Build what you hear",
@@ -84,14 +81,12 @@
     "ex.micBlocked": "The microphone is off. Turn it on in your browser settings, or skip speaking.",
     "ex.micUnsupported": "Speaking practice works in Safari and Chrome.",
     "ex.clear": "Clear",
-
     "done.title": "Lesson complete",
     "done.xp": "+{n} XP",
     "done.accuracy": "Accuracy",
     "done.time": "Time",
     "done.next": "Next",
     "done.home": "Back home",
-
     "exam.title": "Mock exam",
     "exam.intro": "No translations. Just like the real test.",
     "exam.begin": "Begin exam",
@@ -102,18 +97,15 @@
     "exam.passBody": "You understood {n} of {total} commands.",
     "exam.failBody": "You understood {n} of {total}. Practice the ones you missed.",
     "exam.retry": "Try again",
-
     "phr.title": "Phrase book",
     "phr.search": "Search phrases",
     "phr.empty": "No phrases match your search.",
-
     "prc.title": "Practice",
     "prc.weak": "Your weak phrases",
     "prc.weakEmpty": "No weak phrases yet. Finish a lesson first.",
     "prc.quick": "Quick practice",
     "prc.listenOnly": "Listening only",
     "prc.speakOnly": "Speaking only",
-
     "set.title": "Settings",
     "set.speed": "Voice speed",
     "set.slow": "Slow",
@@ -142,13 +134,11 @@
     "set.on": "On",
     "set.off": "Off",
     "set.saved": "Saved",
-
     "pro.title": "Profile",
     "pro.xp": "Total XP",
     "pro.streak": "Streak",
     "pro.learned": "Phrases learned",
     "pro.ready": "Exam ready",
-
     "info.title": "How it works",
     "info.p1": "Roadword teaches the exact English phrases a driving examiner uses in California.",
     "info.p2": "Each stop has short lessons. You listen, choose, build, and speak each phrase.",
@@ -156,7 +146,6 @@
     "info.p4": "Not affiliated with the California DMV.",
     "info.source": "Phrases based on the DMV examiner phrase sheet (DL 80).",
     "info.close": "Close",
-
     "gen.back": "Back",
     "gen.close": "Close",
     "gen.offline": "You're offline. Lessons still work.",
@@ -181,7 +170,6 @@
     "car.wipers": "How do you turn on the windshield wipers?",
     "car.defroster": "How do you turn on the defroster?",
     "car.auto": "Is your vehicle equipped with automated technology?",
-
     "dir.cornerLeft": "At the corner, turn left.",
     "dir.cornerRight": "At the corner, turn right.",
     "dir.lightLeft": "Make a left at the next light.",
@@ -189,7 +177,6 @@
     "dir.stopRight": "At the stop sign, turn right.",
     "dir.straight": "Continue straight.",
     "dir.follow": "If I don't say turn, follow the road ahead.",
-
     "lane.left": "Lane change left.",
     "lane.right": "Lane change right.",
     "lane.necessary": "Make necessary lane changes to follow my directions.",
@@ -197,7 +184,6 @@
     "lane.curb": "Pull up to the curb.",
     "lane.back": "When it's safe, pull back into traffic.",
     "lane.safe": "Perform all maneuvers only when safe.",
-
     "park.backUp": "Back up straight.",
     "park.keepGoing": "Keep going.",
     "park.okStop": "OK, stop.",
@@ -207,14 +193,12 @@
     "park.inPark": "Put it in park.",
     "park.engineOff": "Turn off the engine.",
     "park.dmv": "Take me back to the DMV.",
-
     "talk.evaluated": "You will be evaluated on your ability to drive safely.",
     "talk.trick": "I will not trick you or ask you to do anything illegal.",
     "talk.questions": "Do you have any questions?",
     "talk.seatbelt": "Put on your seat belt.",
     "talk.noAuto": "Do not use cruise control or other automated features.",
     "talk.repeat": "Can you repeat that, please?",
-
     "res.blindSpot": "You didn't check your blind spot.",
     "res.bothWays": "You didn't look both ways.",
     "res.tooFast": "You drove too fast.",

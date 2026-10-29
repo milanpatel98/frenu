@@ -6,8 +6,9 @@
     "dir": "ltr"
   },
   "ui": {
+    "app.badge": "Driving test sa U.S.",
+    "app.badgeSub": "Behind-the-wheel test ng DMV",
     "app.tagline": "Ang English ng iyong driving test, sa sarili mong wika.",
-
     "onb.welcome": "Alamin ang sasabihin ng examiner.",
     "onb.chooseLanguage": "Iyong wika",
     "onb.searchLanguage": "Maghanap ng wika",
@@ -22,7 +23,6 @@
     "onb.agree": "Sumasang-ayon ako sa Mga Tuntunin at Patakaran sa Privacy",
     "onb.start": "Simulan ang pag-aaral",
     "onb.agreeFirst": "Lagyan muna ng check ang kahon para sumang-ayon.",
-
     "home.hello": "Hi, {name}",
     "home.helloNoName": "Hi",
     "home.today": "Aralin ngayong araw",
@@ -37,11 +37,9 @@
     "home.streak": "{n} araw",
     "home.streakOne": "1 araw",
     "home.allDone": "Tapos na ang lahat ng hinto. Patuloy na magsanay.",
-
     "nav.home": "Home",
     "nav.practice": "Magsanay",
     "nav.profile": "Profile",
-
     "stage.car": "Ang sasakyan",
     "stage.car.info": "Bago ka magmaneho, sisilipin ng examiner ang sasakyan. Ipapakita mo ang mga kontrol gaya ng busina, wiper, at hand signal.",
     "stage.dir": "Direksyon",
@@ -56,7 +54,6 @@
     "stage.res.info": "Mga komentong maaari mong marinig pagkatapos ng test, at kung pasado o bagsak.",
     "stage.exam": "Mock exam",
     "stage.exam.info": "Walang salin, gaya ng totoong test. Makinig at kumilos.",
-
     "ex.listen": "Ano ang ibig sabihin nito?",
     "ex.act": "Ano ang gagawin mo?",
     "ex.build": "Buuin ang narinig mo",
@@ -84,14 +81,12 @@
     "ex.micBlocked": "Naka-off ang mikropono. I-on ito sa settings ng browser, o laktawan ang pagsasalita.",
     "ex.micUnsupported": "Gumagana ang pagsasanay sa pagsasalita sa Safari at Chrome.",
     "ex.clear": "Burahin",
-
     "done.title": "Tapos na ang aralin",
     "done.xp": "+{n} XP",
     "done.accuracy": "Katumpakan",
     "done.time": "Oras",
     "done.next": "Susunod",
     "done.home": "Bumalik sa home",
-
     "exam.title": "Mock exam",
     "exam.intro": "Walang salin. Gaya ng totoong test.",
     "exam.begin": "Simulan ang exam",
@@ -102,18 +97,15 @@
     "exam.passBody": "Naintindihan mo ang {n} sa {total} utos.",
     "exam.failBody": "Naintindihan mo ang {n} sa {total}. Sanayin ang mga hindi mo nakuha.",
     "exam.retry": "Subukan ulit",
-
     "phr.title": "Aklat ng parirala",
     "phr.search": "Maghanap ng parirala",
     "phr.empty": "Walang pariralang tugma sa hinanap mo.",
-
     "prc.title": "Magsanay",
     "prc.weak": "Mga mahina mong parirala",
     "prc.weakEmpty": "Wala pang mahinang parirala. Tapusin muna ang isang aralin.",
     "prc.quick": "Mabilis na pagsasanay",
     "prc.listenOnly": "Pakikinig lang",
     "prc.speakOnly": "Pagsasalita lang",
-
     "set.title": "Settings",
     "set.speed": "Bilis ng boses",
     "set.slow": "Mabagal",
@@ -142,13 +134,11 @@
     "set.on": "On",
     "set.off": "Off",
     "set.saved": "Na-save",
-
     "pro.title": "Profile",
     "pro.xp": "Kabuuang XP",
     "pro.streak": "Streak",
     "pro.learned": "Mga pariralang natutunan",
     "pro.ready": "Handa sa exam",
-
     "info.title": "Paano ito gumagana",
     "info.p1": "Itinuturo ng Roadword ang eksaktong mga pariralang English na ginagamit ng driving examiner sa California.",
     "info.p2": "May maiikling aralin ang bawat hinto. Pakikinggan mo, pipiliin, bubuuin, at sasabihin ang bawat parirala.",
@@ -156,7 +146,6 @@
     "info.p4": "Ang Roadword ay hindi kaugnay o kaanib ng California DMV.",
     "info.source": "Batay ang mga parirala sa listahan ng parirala ng DMV examiner (DL 80).",
     "info.close": "Isara",
-
     "gen.back": "Bumalik",
     "gen.close": "Isara",
     "gen.offline": "Offline ka. Gumagana pa rin ang mga aralin.",
@@ -181,7 +170,6 @@
     "car.wipers": "Paano mo bubuksan ang windshield wipers?",
     "car.defroster": "Paano mo bubuksan ang defroster (pantanggal ng hamog sa salamin)?",
     "car.auto": "May automated na teknolohiya ba ang sasakyan mo?",
-
     "dir.cornerLeft": "Sa kanto, kumaliwa.",
     "dir.cornerRight": "Sa kanto, kumanan.",
     "dir.lightLeft": "Kumaliwa sa susunod na stoplight.",
@@ -189,7 +177,6 @@
     "dir.stopRight": "Sa stop sign, kumanan.",
     "dir.straight": "Dumiretso lang.",
     "dir.follow": "Kung hindi ko sinabing lumiko, sundan lang ang daan sa unahan.",
-
     "lane.left": "Lumipat sa kaliwang lane.",
     "lane.right": "Lumipat sa kanang lane.",
     "lane.necessary": "Lumipat ng lane kung kailangan para masunod ang direksyon ko.",
@@ -197,7 +184,6 @@
     "lane.curb": "Itabi ang sasakyan sa gilid ng bangketa (curb).",
     "lane.back": "Kapag ligtas na, bumalik sa daloy ng trapiko.",
     "lane.safe": "Gawin ang lahat ng maniobra kapag ligtas lang.",
-
     "park.backUp": "Umatras nang diretso.",
     "park.keepGoing": "Tuloy lang.",
     "park.okStop": "Sige, huminto.",
@@ -207,14 +193,12 @@
     "park.inPark": "Ilagay sa Park (P) ang kambyo.",
     "park.engineOff": "Patayin ang makina.",
     "park.dmv": "Ibalik mo ako sa DMV.",
-
     "talk.evaluated": "Susuriin ka batay sa kakayahan mong magmaneho nang ligtas.",
     "talk.trick": "Hindi kita lilinlangin o uutusang gumawa ng anumang labag sa batas.",
     "talk.questions": "May tanong ka ba?",
     "talk.seatbelt": "Isuot ang seat belt mo.",
     "talk.noAuto": "Huwag gamitin ang cruise control o iba pang automated na feature.",
     "talk.repeat": "Puwede po bang pakiulit iyon?",
-
     "res.blindSpot": "Hindi mo tiningnan ang blind spot mo.",
     "res.bothWays": "Hindi ka tumingin sa magkabilang direksyon.",
     "res.tooFast": "Masyado kang mabilis magmaneho.",

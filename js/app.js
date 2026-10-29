@@ -3,10 +3,10 @@ import { loadLanguage, t, phraseEn, phraseNative, esc, isEnglishUi, currentCode 
 import { store, liveStreak } from './store.js';
 import { speak, stopSpeaking, canListen, listen, requestMic, grade, words, englishVoices, RATES } from './speech.js';
 import { buildLesson, buildPractice, buildExam, phrase, stageProgress, sameSentence, weakIds, shuffle } from './engine.js';
-import { visual, scene, icon, UI, mark } from './visuals.js';
+import { visual, scene, icon, UI, mark, flag } from './visuals.js';
 import { TERMS, PRIVACY } from './legal.js';
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const app = document.getElementById('app');
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -206,6 +206,7 @@ function viewOnboarding() {
     render(`<main class="view onb">
       <div class="bar"><span class="brand">${mark(24)} Roadword</span><span class="dots" aria-hidden="true">${dots}</span></div>
       <div class="onb-hero">
+        <span class="us-pill">${flag(20)}<span>${esc(t('app.badge'))}</span></span>
         <h1 class="en" lang="en">Know every word of your drive test.</h1>
         ${sel && sel !== 'en' ? `<p class="tr">${esc(t('onb.welcome'))}</p>` : ''}
       </div>
@@ -265,6 +266,7 @@ function viewOnboarding() {
   render(`<main class="view onb">
     <div class="bar"><button class="icon-btn" data-a="back" aria-label="${esc(t('gen.back'))}">${UI.back}</button><span class="dots" aria-hidden="true">${dots}</span></div>
     <div class="onb-scene" style="margin-top:4vh">${scene('straight', { animate: !reduceMotion, dur: 3 })}</div>
+    <span class="us-pill">${flag(20)}<span>${esc(t('app.badgeSub'))}</span></span>
     <h1 class="onb-title">${esc(t('app.tagline'))}</h1>
     <div class="sticky-foot">
       <label class="agree"><input type="checkbox" id="agreeBox" ${store.get().agreed ? 'checked' : ''}><span>${esc(t('onb.agree'))} · <button class="link" data-a="terms" type="button">${esc(t('set.terms'))}</button> · <button class="link" data-a="privacy" type="button">${esc(t('set.privacy'))}</button></span></label>
@@ -303,6 +305,7 @@ function routeCard() {
   return `<button class="route glass" data-a="stages" aria-label="${esc(t('home.stopOf', { n, total: STAGES.length }))}">
     <span class="track">${html}</span>
     <span class="route-meta"><span><b>${esc(t('home.stopOf', { n, total: STAGES.length }))}</b> ${esc(t(`stage.${cur.id}`))}</span><span>${esc(t('home.exam'))}</span></span>
+    <span class="route-foot">${flag(16)}<span>${esc(t('app.badgeSub'))}</span></span>
   </button>`;
 }
 
@@ -326,7 +329,7 @@ function viewHome() {
   render(`${homeScene(maneuverOf(featured))}
   <main class="home-ui">
     <div class="bar">
-      <span class="brand">${mark(24)} Roadword</span>
+      <span class="brand">${mark(24)} Roadword ${flag(18)}</span>
       <span class="chips">
         <button class="chip" data-a="lang" aria-label="${esc(t('set.language'))}">${UI.globe}<span>${esc(code ? code.code.split('-')[0].toUpperCase() : 'EN')}</span></button>
         <span class="chip" aria-label="${esc(t('pro.streak'))}: ${streak}">${UI.flame}<span>${streak}</span></span>
@@ -689,6 +692,7 @@ function viewExamIntro() {
   render(`<main class="view lesson">
     <div class="bar"><button class="icon-btn" data-a="home" aria-label="${esc(t('gen.back'))}">${UI.back}</button></div>
     <div class="stage-visual">${scene('laneLeft', { animate: !reduceMotion, dur: 3.4 })}</div>
+    <span class="us-pill">${flag(20)}<span>${esc(t('app.badgeSub'))}</span></span>
     <h1 class="page-title">${esc(t('exam.title'))}</h1>
     <p style="color:var(--ink-2)">${esc(t('exam.intro'))}</p>
     <div class="exam-stats"><div class="stat"><span>${esc(t('exam.commands'))}</span><b>20</b></div><div class="stat"><span>${esc(t('pro.ready'))}</span><b>${Math.round(EXAM_PASS * 100)}%</b></div></div>

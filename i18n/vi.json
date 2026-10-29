@@ -6,8 +6,9 @@
     "dir": "ltr"
   },
   "ui": {
+    "app.badge": "Thi lái xe tại Mỹ",
+    "app.badgeSub": "Bài thi lái thực hành của DMV",
     "app.tagline": "Tiếng Anh trong bài thi lái xe, bằng ngôn ngữ của bạn.",
-
     "onb.welcome": "Học những gì giám khảo sẽ nói.",
     "onb.chooseLanguage": "Ngôn ngữ của bạn",
     "onb.searchLanguage": "Tìm ngôn ngữ",
@@ -22,7 +23,6 @@
     "onb.agree": "Tôi đồng ý với Điều khoản và Chính sách quyền riêng tư",
     "onb.start": "Bắt đầu học",
     "onb.agreeFirst": "Vui lòng đánh dấu vào ô để đồng ý trước.",
-
     "home.hello": "Chào {name}",
     "home.helloNoName": "Xin chào",
     "home.today": "Bài học hôm nay",
@@ -37,11 +37,9 @@
     "home.streak": "{n} ngày",
     "home.streakOne": "1 ngày",
     "home.allDone": "Đã hoàn thành tất cả các chặng. Hãy tiếp tục luyện tập.",
-
     "nav.home": "Trang chủ",
     "nav.practice": "Luyện tập",
     "nav.profile": "Hồ sơ",
-
     "stage.car": "Chiếc xe",
     "stage.car.info": "Trước khi lái, giám khảo sẽ kiểm tra xe. Bạn sẽ chỉ các bộ phận như còi, cần gạt nước và tín hiệu tay.",
     "stage.dir": "Chỉ đường",
@@ -56,7 +54,6 @@
     "stage.res.info": "Những nhận xét bạn có thể nghe sau bài thi, và kết quả đậu hay rớt.",
     "stage.exam": "Thi thử",
     "stage.exam.info": "Không có bản dịch, giống như bài thi thật. Hãy nghe và làm theo.",
-
     "ex.listen": "Câu này có nghĩa là gì?",
     "ex.act": "Bạn sẽ làm gì?",
     "ex.build": "Ghép lại câu bạn nghe",
@@ -84,14 +81,12 @@
     "ex.micBlocked": "Micro đang tắt. Hãy bật trong cài đặt trình duyệt, hoặc bỏ qua phần nói.",
     "ex.micUnsupported": "Luyện nói hoạt động trên Safari và Chrome.",
     "ex.clear": "Xóa",
-
     "done.title": "Hoàn thành bài học",
     "done.xp": "+{n} XP",
     "done.accuracy": "Độ chính xác",
     "done.time": "Thời gian",
     "done.next": "Tiếp theo",
     "done.home": "Về trang chủ",
-
     "exam.title": "Thi thử",
     "exam.intro": "Không có bản dịch. Giống như bài thi thật.",
     "exam.begin": "Bắt đầu thi",
@@ -102,18 +97,15 @@
     "exam.passBody": "Bạn đã hiểu {n}/{total} hiệu lệnh.",
     "exam.failBody": "Bạn đã hiểu {n}/{total}. Hãy luyện lại những câu bạn chưa hiểu.",
     "exam.retry": "Thử lại",
-
     "phr.title": "Sổ tay câu",
     "phr.search": "Tìm câu",
     "phr.empty": "Không có câu nào phù hợp.",
-
     "prc.title": "Luyện tập",
     "prc.weak": "Những câu bạn còn yếu",
     "prc.weakEmpty": "Chưa có câu nào. Hãy hoàn thành một bài học trước.",
     "prc.quick": "Luyện nhanh",
     "prc.listenOnly": "Chỉ luyện nghe",
     "prc.speakOnly": "Chỉ luyện nói",
-
     "set.title": "Cài đặt",
     "set.speed": "Tốc độ giọng đọc",
     "set.slow": "Chậm",
@@ -142,13 +134,11 @@
     "set.on": "Bật",
     "set.off": "Tắt",
     "set.saved": "Đã lưu",
-
     "pro.title": "Hồ sơ",
     "pro.xp": "Tổng XP",
     "pro.streak": "Chuỗi ngày học",
     "pro.learned": "Số câu đã học",
     "pro.ready": "Sẵn sàng thi",
-
     "info.title": "Cách hoạt động",
     "info.p1": "Roadword dạy chính xác những câu tiếng Anh mà giám khảo lái xe ở California sử dụng.",
     "info.p2": "Mỗi chặng có các bài học ngắn. Bạn nghe, chọn, ghép câu và nói từng câu.",
@@ -156,7 +146,6 @@
     "info.p4": "Roadword không liên kết với DMV California.",
     "info.source": "Các câu dựa trên bảng câu nói của giám khảo DMV (DL 80).",
     "info.close": "Đóng",
-
     "gen.back": "Quay lại",
     "gen.close": "Đóng",
     "gen.offline": "Bạn đang ngoại tuyến. Bài học vẫn hoạt động.",
@@ -181,7 +170,6 @@
     "car.wipers": "Bạn bật cần gạt nước kính chắn gió như thế nào?",
     "car.defroster": "Bạn bật chức năng sấy kính như thế nào?",
     "car.auto": "Xe của bạn có trang bị công nghệ lái tự động không?",
-
     "dir.cornerLeft": "Đến góc đường, rẽ trái.",
     "dir.cornerRight": "Đến góc đường, rẽ phải.",
     "dir.lightLeft": "Rẽ trái ở đèn giao thông kế tiếp.",
@@ -189,7 +177,6 @@
     "dir.stopRight": "Đến biển dừng (STOP), rẽ phải.",
     "dir.straight": "Tiếp tục đi thẳng.",
     "dir.follow": "Nếu tôi không bảo rẽ, hãy đi theo con đường phía trước.",
-
     "lane.left": "Chuyển sang làn bên trái.",
     "lane.right": "Chuyển sang làn bên phải.",
     "lane.necessary": "Hãy chuyển làn khi cần để đi theo hướng tôi chỉ.",
@@ -197,7 +184,6 @@
     "lane.curb": "Đỗ sát vào lề đường.",
     "lane.back": "Khi an toàn, hãy nhập lại vào dòng xe.",
     "lane.safe": "Chỉ thực hiện mọi thao tác khi an toàn.",
-
     "park.backUp": "Lùi xe thẳng về phía sau.",
     "park.keepGoing": "Tiếp tục.",
     "park.okStop": "Được rồi, dừng lại.",
@@ -207,14 +193,12 @@
     "park.inPark": "Chuyển cần số về số P (đỗ).",
     "park.engineOff": "Tắt máy.",
     "park.dmv": "Đưa tôi quay về DMV.",
-
     "talk.evaluated": "Bạn sẽ được đánh giá về khả năng lái xe an toàn.",
     "talk.trick": "Tôi sẽ không gài bẫy bạn hay yêu cầu bạn làm điều gì trái luật.",
     "talk.questions": "Bạn có câu hỏi nào không?",
     "talk.seatbelt": "Thắt dây an toàn.",
     "talk.noAuto": "Không sử dụng chế độ ga tự động (cruise control) hoặc các tính năng tự động khác.",
     "talk.repeat": "Xin vui lòng nhắc lại được không?",
-
     "res.blindSpot": "Bạn đã không kiểm tra điểm mù.",
     "res.bothWays": "Bạn đã không nhìn cả hai phía.",
     "res.tooFast": "Bạn đã lái quá nhanh.",

@@ -6,8 +6,9 @@
     "dir": "ltr"
   },
   "ui": {
+    "app.badge": "Exame de direção dos EUA",
+    "app.badgeSub": "Exame prático do DMV",
     "app.tagline": "O inglês da sua prova de direção, no seu idioma.",
-
     "onb.welcome": "Aprenda o que o examinador vai dizer.",
     "onb.chooseLanguage": "Seu idioma",
     "onb.searchLanguage": "Buscar idiomas",
@@ -22,7 +23,6 @@
     "onb.agree": "Concordo com os Termos e a Política de Privacidade",
     "onb.start": "Começar",
     "onb.agreeFirst": "Marque a caixa para concordar primeiro.",
-
     "home.hello": "Olá, {name}",
     "home.helloNoName": "Olá",
     "home.today": "Lição de hoje",
@@ -37,11 +37,9 @@
     "home.streak": "{n} dias",
     "home.streakOne": "1 dia",
     "home.allDone": "Todas as paradas concluídas. Continue praticando.",
-
     "nav.home": "Início",
     "nav.practice": "Praticar",
     "nav.profile": "Perfil",
-
     "stage.car": "O carro",
     "stage.car.info": "Antes de dirigir, o examinador verifica o carro. Você mostra comandos como a buzina, os limpadores e os sinais com o braço.",
     "stage.dir": "Direções",
@@ -56,7 +54,6 @@
     "stage.res.info": "Comentários que você pode ouvir depois da prova, e se foi aprovado ou não.",
     "stage.exam": "Simulado",
     "stage.exam.info": "Sem traduções, igual à prova real. Ouça e reaja.",
-
     "ex.listen": "O que significa?",
     "ex.act": "O que você faz?",
     "ex.build": "Monte o que você ouviu",
@@ -84,14 +81,12 @@
     "ex.micBlocked": "O microfone está desligado. Ative-o nas configurações do navegador ou pule a parte de fala.",
     "ex.micUnsupported": "A prática de fala funciona no Safari e no Chrome.",
     "ex.clear": "Limpar",
-
     "done.title": "Lição concluída",
     "done.xp": "+{n} XP",
     "done.accuracy": "Precisão",
     "done.time": "Tempo",
     "done.next": "Próxima",
     "done.home": "Voltar ao início",
-
     "exam.title": "Simulado",
     "exam.intro": "Sem traduções. Igual à prova real.",
     "exam.begin": "Iniciar simulado",
@@ -102,18 +97,15 @@
     "exam.passBody": "Você entendeu {n} de {total} comandos.",
     "exam.failBody": "Você entendeu {n} de {total}. Pratique os que você errou.",
     "exam.retry": "Tentar de novo",
-
     "phr.title": "Frases",
     "phr.search": "Buscar frases",
     "phr.empty": "Nenhuma frase encontrada.",
-
     "prc.title": "Praticar",
     "prc.weak": "Suas frases difíceis",
     "prc.weakEmpty": "Ainda não há frases difíceis. Termine uma lição primeiro.",
     "prc.quick": "Prática rápida",
     "prc.listenOnly": "Só ouvir",
     "prc.speakOnly": "Só falar",
-
     "set.title": "Configurações",
     "set.speed": "Velocidade da voz",
     "set.slow": "Lenta",
@@ -142,13 +134,11 @@
     "set.on": "Ligado",
     "set.off": "Desligado",
     "set.saved": "Salvo",
-
     "pro.title": "Perfil",
     "pro.xp": "XP total",
     "pro.streak": "Sequência",
     "pro.learned": "Frases aprendidas",
     "pro.ready": "Pronto para a prova",
-
     "info.title": "Como funciona",
     "info.p1": "O Roadword ensina as frases exatas em inglês que um examinador de direção usa na Califórnia.",
     "info.p2": "Cada parada tem lições curtas. Você ouve, escolhe, monta e fala cada frase.",
@@ -156,7 +146,6 @@
     "info.p4": "O Roadword não tem vínculo com o DMV da Califórnia.",
     "info.source": "Frases baseadas na folha de frases do examinador do DMV (DL 80).",
     "info.close": "Fechar",
-
     "gen.back": "Voltar",
     "gen.close": "Fechar",
     "gen.offline": "Você está off-line. As lições continuam funcionando.",
@@ -181,7 +170,6 @@
     "car.wipers": "Como você liga os limpadores de para-brisa?",
     "car.defroster": "Como você liga o desembaçador?",
     "car.auto": "Seu veículo tem tecnologia de direção automatizada?",
-
     "dir.cornerLeft": "Na esquina, vire à esquerda.",
     "dir.cornerRight": "Na esquina, vire à direita.",
     "dir.lightLeft": "Vire à esquerda no próximo semáforo.",
@@ -189,7 +177,6 @@
     "dir.stopRight": "Na placa de PARE, vire à direita.",
     "dir.straight": "Siga em frente.",
     "dir.follow": "Se eu não disser para virar, siga pela via em frente.",
-
     "lane.left": "Mude para a faixa da esquerda.",
     "lane.right": "Mude para a faixa da direita.",
     "lane.necessary": "Faça as mudanças de faixa necessárias para seguir minhas instruções.",
@@ -197,7 +184,6 @@
     "lane.curb": "Encoste junto ao meio-fio.",
     "lane.back": "Quando for seguro, volte para o trânsito.",
     "lane.safe": "Faça todas as manobras somente quando for seguro.",
-
     "park.backUp": "Dê ré em linha reta.",
     "park.keepGoing": "Continue.",
     "park.okStop": "OK, pare.",
@@ -207,14 +193,12 @@
     "park.inPark": "Coloque o câmbio em P (estacionar).",
     "park.engineOff": "Desligue o motor.",
     "park.dmv": "Volte comigo para o DMV.",
-
     "talk.evaluated": "Você será avaliado pela sua capacidade de dirigir com segurança.",
     "talk.trick": "Não vou tentar enganar você nem pedir que faça nada ilegal.",
     "talk.questions": "Você tem alguma pergunta?",
     "talk.seatbelt": "Coloque o cinto de segurança.",
     "talk.noAuto": "Não use o piloto automático nem outros recursos automatizados.",
     "talk.repeat": "Pode repetir, por favor?",
-
     "res.blindSpot": "Você não verificou o ponto cego.",
     "res.bothWays": "Você não olhou para os dois lados.",
     "res.tooFast": "Você dirigiu rápido demais.",

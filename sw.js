@@ -1,5 +1,5 @@
 // Offline cache: app shell and every language pack. Bump VERSION on each release.
-const VERSION = 'roadword-1.0.0';
+const VERSION = 'roadword-1.0.1';
 const LANGS = ['en', 'es', 'zh-Hans', 'zh-Hant', 'vi', 'ko', 'tl', 'ru', 'hy', 'pa', 'hi', 'ar', 'fa', 'pt'];
 const SHELL = [
   './', './index.html', './manifest.webmanifest', './css/app.css',

@@ -168,3 +168,13 @@ export const UI = {
 export function mark(size = 22) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M20 25V16a5 5 0 0 0-5-5H9m0 0 4-4m-4 4 4 4" fill="none" stroke="var(--on-accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
+
+// U.S. flag (13 stripes, blue field with a star grid)
+export function flag(w = 22) {
+  const h = Math.round(w * 10 / 19 * 100) / 100;
+  let stripes = '';
+  for (let i = 0; i < 13; i += 2) stripes += `<rect y="${(i * 10 / 13).toFixed(3)}" width="19" height="${(10 / 13).toFixed(3)}" fill="#B22234"/>`;
+  let stars = '';
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 6; c++) stars += `<circle cx="${0.66 + c * 1.32 + (r % 2 ? 0.66 : 0)}" cy="${0.6 + r * 1.05}" r=".28" fill="#FFFFFF"/>`;
+  return `<svg class="flag" width="${w}" height="${h}" viewBox="0 0 19 10" role="img" aria-label="United States"><rect width="19" height="10" fill="#FFFFFF"/>${stripes}<rect width="7.6" height="${(70 / 13).toFixed(3)}" fill="#3C3B6E"/>${stars}</svg>`;
+}

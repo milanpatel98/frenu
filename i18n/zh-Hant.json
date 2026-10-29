@@ -6,8 +6,9 @@
     "dir": "ltr"
   },
   "ui": {
+    "app.badge": "美國駕照路考",
+    "app.badgeSub": "DMV 路考",
     "app.tagline": "路考英文，用你的母語來學。",
-
     "onb.welcome": "聽懂考官會說的每一句話。",
     "onb.chooseLanguage": "你的語言",
     "onb.searchLanguage": "搜尋語言",
@@ -22,7 +23,6 @@
     "onb.agree": "我同意使用條款及隱私政策",
     "onb.start": "開始學習",
     "onb.agreeFirst": "請先勾選同意。",
-
     "home.hello": "你好，{name}",
     "home.helloNoName": "你好",
     "home.today": "今日課程",
@@ -37,11 +37,9 @@
     "home.streak": "{n} 天",
     "home.streakOne": "1 天",
     "home.allDone": "所有站點都完成了，繼續保持練習。",
-
     "nav.home": "首頁",
     "nav.practice": "練習",
     "nav.profile": "我的",
-
     "stage.car": "車輛檢查",
     "stage.car.info": "開車前，考官會先檢查車輛。你需要示範喇叭、雨刷和手勢信號等操作。",
     "stage.dir": "方向指示",
@@ -56,7 +54,6 @@
     "stage.res.info": "考試後你可能聽到的評語，以及合格或不合格。",
     "stage.exam": "模擬考試",
     "stage.exam.info": "沒有翻譯，和真實考試一樣。仔細聽，及時反應。",
-
     "ex.listen": "這是什麼意思？",
     "ex.act": "你應該怎麼做？",
     "ex.build": "拼出你聽到的句子",
@@ -84,14 +81,12 @@
     "ex.micBlocked": "麥克風已關閉。請在瀏覽器設定中開啟，或略過口說練習。",
     "ex.micUnsupported": "口說練習支援 Safari 和 Chrome。",
     "ex.clear": "清除",
-
     "done.title": "課程完成",
     "done.xp": "+{n} XP",
     "done.accuracy": "正確率",
     "done.time": "用時",
     "done.next": "下一課",
     "done.home": "返回首頁",
-
     "exam.title": "模擬考試",
     "exam.intro": "沒有翻譯，和真實考試一樣。",
     "exam.begin": "開始考試",
@@ -102,18 +97,15 @@
     "exam.passBody": "你聽懂了 {total} 個指令中的 {n} 個。",
     "exam.failBody": "你聽懂了 {total} 個中的 {n} 個。去練習沒聽懂的那些吧。",
     "exam.retry": "再試一次",
-
     "phr.title": "短語手冊",
     "phr.search": "搜尋短語",
     "phr.empty": "找不到相符的短語。",
-
     "prc.title": "練習",
     "prc.weak": "你的弱項短語",
     "prc.weakEmpty": "還沒有弱項短語。先完成一堂課吧。",
     "prc.quick": "快速練習",
     "prc.listenOnly": "只練聽力",
     "prc.speakOnly": "只練口說",
-
     "set.title": "設定",
     "set.speed": "語速",
     "set.slow": "慢",
@@ -142,13 +134,11 @@
     "set.on": "開",
     "set.off": "關",
     "set.saved": "已儲存",
-
     "pro.title": "我的",
     "pro.xp": "總 XP",
     "pro.streak": "連續學習",
     "pro.learned": "已學短語",
     "pro.ready": "考試準備度",
-
     "info.title": "使用說明",
     "info.p1": "Roadword 教你加州路考考官實際使用的英文短語。",
     "info.p2": "每一站都有簡短的課程。你會聆聽、選擇、拼句並說出每個短語。",
@@ -156,7 +146,6 @@
     "info.p4": "本應用程式與加州 DMV（車輛管理局）沒有任何關係。",
     "info.source": "短語依據 DMV 考官用語表（DL 80）。",
     "info.close": "關閉",
-
     "gen.back": "返回",
     "gen.close": "關閉",
     "gen.offline": "你目前離線，課程仍可使用。",
@@ -181,7 +170,6 @@
     "car.wipers": "怎麼打開雨刷？",
     "car.defroster": "怎麼打開除霧／除霜功能？",
     "car.auto": "你的車有沒有配備自動駕駛輔助技術？",
-
     "dir.cornerLeft": "在路口左轉。",
     "dir.cornerRight": "在路口右轉。",
     "dir.lightLeft": "在下一個紅綠燈左轉。",
@@ -189,7 +177,6 @@
     "dir.stopRight": "在停車標誌（STOP）處右轉。",
     "dir.straight": "繼續直行。",
     "dir.follow": "如果我沒說轉彎，就沿著前面的路繼續開。",
-
     "lane.left": "向左變換車道。",
     "lane.right": "向右變換車道。",
     "lane.necessary": "依照我的指示，需要時自行變換車道。",
@@ -197,7 +184,6 @@
     "lane.curb": "把車停到路邊。",
     "lane.back": "安全時，重新駛回車流中。",
     "lane.safe": "所有操作都只在安全時進行。",
-
     "park.backUp": "直線倒車。",
     "park.keepGoing": "繼續。",
     "park.okStop": "好，停。",
@@ -207,14 +193,12 @@
     "park.inPark": "排到 P 檔（停車檔）。",
     "park.engineOff": "關掉引擎。",
     "park.dmv": "開回 DMV。",
-
     "talk.evaluated": "我們會評估你安全駕駛的能力。",
     "talk.trick": "我不會故意刁難你，也不會要求你做任何違法的事。",
     "talk.questions": "你有什麼問題嗎？",
     "talk.seatbelt": "繫好安全帶。",
     "talk.noAuto": "不要使用定速巡航或其他自動駕駛功能。",
     "talk.repeat": "可以請您再說一遍嗎？",
-
     "res.blindSpot": "你沒有檢查盲點。",
     "res.bothWays": "你沒有左右察看。",
     "res.tooFast": "你開得太快了。",

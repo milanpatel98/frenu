@@ -404,3 +404,9 @@ select.select { appearance: none; background: transparent; border: 0; color: var
 
 .inline-input { border: 0; background: transparent; text-align: end; color: var(--ink-2); font-size: var(--t-sm); max-width: 55%; min-height: 40px; padding: 0; }
 .inline-input:focus { outline: none; color: var(--ink); }
+
+/* U.S. label */
+.flag { display: inline-block; border-radius: 2.5px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); flex: none; vertical-align: middle; }
+.us-pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px 0 10px; border-radius: 17px; background: var(--surface); font-size: var(--t-sm); font-weight: 600; color: var(--ink); }
+.brand .flag { margin-inline-start: 2px; }
+.route-foot { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); font-size: var(--t-xs); color: var(--ink-2); }
