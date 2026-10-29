@@ -46,6 +46,9 @@ export function t(key, vars) {
 // English examiner phrase
 export function phraseEn(id) { return (en && en.phrases[id]) || id; }
 
+// How the English sounds, spelled for the learner's language (empty for English)
+export function phraseSay(id) { return (pack && pack.meta.code !== 'en' && pack.say && pack.say[id]) || ''; }
+
 // Meaning in the learner's language
 export function phraseNative(id) { return (pack && pack.phrases[id]) || phraseEn(id); }
 

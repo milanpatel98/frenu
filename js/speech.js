@@ -61,7 +61,47 @@ export function speak(text, { slow = false, rate } = {}) {
   });
 }
 
-export function stopSpeaking() { try { synth && synth.cancel(); } catch (e) { /* ignore */ } }
+export function stopSpeaking() {
+  try { synth && synth.cancel(); } catch (e) { /* ignore */ }
+  try { player.pause(); } catch (e) { /* ignore */ }
+}
+
+// ---- Recorded examiner voices ------------------------------------------------
+// Natural voices pre-rendered to audio/<voice>/<phraseId>.mp3. Falls back to the
+// device voice if a file can't play.
+export const VOICE_IDS = ['w1', 'w2', 'm1', 'm2'];
+const PLAY_RATES = { slow: 0.8, normal: 1, fast: 1.15 };
+const player = typeof Audio !== 'undefined' ? new Audio() : null;
+if (player) { player.preload = 'auto'; try { player.preservesPitch = true; player.webkitPreservesPitch = true; } catch (e) { /* ignore */ } }
+
+export function pickExaminer(fixed) {
+  const v = fixed || store.get().settings.voice || 'mix';
+  return v === 'mix' ? VOICE_IDS[Math.floor(Math.random() * VOICE_IDS.length)] : v;
+}
+
+// Play one examiner phrase. Resolves when it finishes (or fails).
+export function playPhrase(id, text, { slow = false, voice, rate } = {}) {
+  return new Promise((resolve) => {
+    if (!player) return speak(text, { slow }).then(resolve);
+    try { synth && synth.cancel(); } catch (e) { /* ignore */ }
+    const v = pickExaminer(voice);
+    let settled = false;
+    const done = (ok) => { if (settled) return; settled = true; player.onended = player.onerror = null; resolve(ok); };
+    player.onended = () => done(true);
+    player.onerror = () => { if (!settled) { settled = true; speak(text, { slow }).then(resolve); } };
+    player.src = `audio/${v}/${id}.mp3`;
+    player.playbackRate = rate ?? (slow ? 0.68 : PLAY_RATES[store.get().settings.speed] || 1);
+    const p = player.play();
+    if (p && p.catch) p.catch(() => { if (!settled) { settled = true; speak(text, { slow }).then(resolve); } });
+    setTimeout(() => done(true), 9000);
+  });
+}
+
+export function warmAudio() {
+  // Called inside a tap so iOS lets later playback start without a new tap.
+  if (!player) return;
+  try { const p = player.play(); if (p && p.catch) p.catch(() => {}); player.pause(); } catch (e) { /* ignore */ }
+}
 
 // ---- Recognition -----------------------------------------------------------
 

@@ -64,7 +64,7 @@ export function scene(name, { animate = true, dur = 3.6 } = {}) {
   const id = `p${++uid}`;
   const reverse = name === 'backUp';
   const extra = name === 'stop'
-    ? `<g transform="translate(140 146)"><path d="M6 0h8l6 6v8l-6 6H6l-6-6V6Z" fill="var(--bad)"/><path d="M10 20v14" stroke="var(--sc-paint)" stroke-width="2"/></g>`
+    ? `<g transform="translate(140 140)">${stopSign(24)}</g>`
     : name === 'parkSpace' ? `<rect x="112" y="26" width="24" height="42" rx="3" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 4"/>` : '';
   const motion = animate
     ? `<animateMotion dur="${dur}s" repeatCount="indefinite" rotate="${reverse ? 'auto-reverse' : 'auto'}" keyPoints="0;0;1;1" keyTimes="0;0.12;0.88;1" calcMode="spline" keySplines="0 0 1 1;0.45 0 0.35 1;0 0 1 1"><mpath href="#${id}"/></animateMotion>`
@@ -115,6 +115,7 @@ const ICONS = {
   defroster: '<path d="M6 36c4-14 12-22 18-22s14 8 18 22Z"/><path d="M16 32c-2-3 2-5 0-8M24 32c-2-3 2-5 0-8M32 32c-2-3 2-5 0-8"/>',
   auto: '<circle cx="24" cy="24" r="16"/><path d="M18 31l6-15 6 15M20.5 25h7"/>',
   gearPark: '<rect x="14" y="6" width="20" height="36" rx="6"/><path d="M21 18v-7h3.5a3.5 3.5 0 0 1 0 7H21" stroke-width="3"/><path d="M20 26h8M20 31h8M20 36h8" opacity=".45"/>',
+  gearDrive: '<rect x="14" y="6" width="20" height="36" rx="6"/><path d="M20 26h8M20 31h8" opacity=".45"/><path d="M21 33V15h3a6 6 0 0 1 0 12h-3" stroke-width="3" transform="translate(0 2)"/>',
   engineOff: '<path d="M24 8v14"/><path d="M15 14a14 14 0 1 0 18 0"/>',
   seatbelt: '<circle cx="24" cy="10" r="5"/><path d="M14 42V24a10 10 0 0 1 20 0v18M16 20l18 22"/>',
   talk: '<path d="M8 12h32v20H22l-8 8v-8H8Z"/><path d="M16 22h16"/>',
@@ -177,4 +178,11 @@ export function flag(w = 22) {
   let stars = '';
   for (let r = 0; r < 5; r++) for (let c = 0; c < 6; c++) stars += `<circle cx="${0.66 + c * 1.32 + (r % 2 ? 0.66 : 0)}" cy="${0.6 + r * 1.05}" r=".28" fill="#FFFFFF"/>`;
   return `<svg class="flag" width="${w}" height="${h}" viewBox="0 0 19 10" role="img" aria-label="United States"><rect width="19" height="10" fill="#FFFFFF"/>${stripes}<rect width="7.6" height="${(70 / 13).toFixed(3)}" fill="#3C3B6E"/>${stars}</svg>`;
+}
+
+// MUTCD R1-1 stop sign: red octagon, white border, white legend
+export function stopSign(size = 48) {
+  const s = size, k = s * 0.2929;
+  const pts = (inset) => { const a = k - inset * 0.414, b = s - a; return `${a},${inset} ${b},${inset} ${s - inset},${a} ${s - inset},${b} ${b},${s - inset} ${a},${s - inset} ${inset},${b} ${inset},${a}`; };
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true"><polygon points="${pts(0)}" fill="#FFFFFF"/><polygon points="${pts(s * 0.04)}" fill="#C8102E"/><polygon points="${pts(s * 0.075)}" fill="none" stroke="#FFFFFF" stroke-width="${s * 0.03}"/><text x="${s / 2}" y="${s * 0.6}" text-anchor="middle" font-family="Overpass, 'Arial Narrow', Arial, sans-serif" font-weight="800" font-size="${s * 0.3}" fill="#FFFFFF" letter-spacing="${s * 0.005}">STOP</text></svg>`;
 }

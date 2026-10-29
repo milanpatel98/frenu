@@ -8,12 +8,13 @@ const DEFAULTS = {
   name: '',
   agreed: false,
   onboarded: false,
-  settings: { speed: 'normal', voiceURI: '', sounds: true, haptics: true, showText: true },
+  settings: { speed: 'normal', voice: 'mix', voiceURI: '', sounds: true, haptics: true, showText: false },
   progress: {},            // { stageId: lessonsDone }
   xp: 0,
   streak: { count: 0, last: '' },
   stats: {},               // { phraseId: { ok, bad, last } }
   examBest: 0,
+  driveBest: null,        // { ok, total, errors, critical, passed }
   mic: 'unknown',          // unknown | granted | denied | unsupported
 };
 

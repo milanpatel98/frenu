@@ -36,6 +36,12 @@ export const PHRASES = [
   { id: 'dir.stopRight',    stage: 'dir',  visual: 'scene:turnRight' },
   { id: 'dir.straight',     stage: 'dir',  visual: 'scene:straight' },
   { id: 'dir.follow',       stage: 'dir',  visual: 'scene:straight' },
+  { id: 'dir.makeLeft',     stage: 'dir',  visual: 'scene:turnLeft' },
+  { id: 'dir.nextLeft',     stage: 'dir',  visual: 'scene:turnLeft' },
+  { id: 'dir.makeRight',    stage: 'dir',  visual: 'scene:turnRight' },
+  { id: 'dir.nextRight',    stage: 'dir',  visual: 'scene:turnRight' },
+  { id: 'dir.stopLeft',     stage: 'dir',  visual: 'scene:turnLeft' },
+  { id: 'dir.goStraight',   stage: 'dir',  visual: 'scene:straight' },
 
   { id: 'lane.left',        stage: 'lane', visual: 'scene:laneLeft' },
   { id: 'lane.right',       stage: 'lane', visual: 'scene:laneRight' },
@@ -44,6 +50,9 @@ export const PHRASES = [
   { id: 'lane.curb',        stage: 'lane', visual: 'scene:pullOver' },
   { id: 'lane.back',        stage: 'lane', visual: 'scene:merge' },
   { id: 'lane.safe',        stage: 'lane', visual: null },
+  { id: 'lane.moveLeft',    stage: 'lane', visual: 'scene:laneLeft' },
+  { id: 'lane.moveRight',   stage: 'lane', visual: 'scene:laneRight' },
+  { id: 'lane.pullAway',    stage: 'lane', visual: 'scene:merge' },
 
   { id: 'park.backUp',      stage: 'park', visual: 'scene:backUp' },
   { id: 'park.keepGoing',   stage: 'park', visual: null },
@@ -54,6 +63,9 @@ export const PHRASES = [
   { id: 'park.inPark',      stage: 'park', visual: 'icon:gearPark' },
   { id: 'park.engineOff',   stage: 'park', visual: 'icon:engineOff' },
   { id: 'park.dmv',         stage: 'park', visual: null },
+  { id: 'park.backSlow',    stage: 'park', visual: 'scene:backUp' },
+  { id: 'park.stopHere',    stage: 'park', visual: 'scene:stop' },
+  { id: 'park.drive',       stage: 'park', visual: 'icon:gearDrive' },
 
   { id: 'talk.evaluated',   stage: 'talk', visual: null },
   { id: 'talk.trick',       stage: 'talk', visual: null },
@@ -70,7 +82,15 @@ export const PHRASES = [
   { id: 'res.practice',     stage: 'res',  visual: null },
   { id: 'res.pass',         stage: 'res',  visual: null },
   { id: 'res.fail',         stage: 'res',  visual: null },
+
+  // examiner lines used only in the drive test
+  { id: 'sys.begin',        stage: 'sys',  visual: null },
+  { id: 'sys.okay',         stage: 'sys',  visual: null },
+  { id: 'sys.keepGoing',    stage: 'sys',  visual: null },
+  { id: 'sys.done',         stage: 'sys',  visual: null },
 ];
+
+export const VOICES = ['w1', 'w2', 'm1', 'm2'];
 
 export const LESSON_CHUNK = 5;   // new phrases per lesson
 export const EXAM_LENGTH = 20;   // commands in the mock exam
