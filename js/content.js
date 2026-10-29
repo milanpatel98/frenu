@@ -14,9 +14,9 @@ export const STAGES = [
 // visual: key into visuals.js (scene:* = animated road scene, icon:* = car control)
 export const PHRASES = [
   { id: 'car.window',       stage: 'car',  visual: 'icon:window' },
-  { id: 'car.armLeft',      stage: 'car',  visual: 'icon:armLeft' },
-  { id: 'car.armRight',     stage: 'car',  visual: 'icon:armRight' },
-  { id: 'car.armStop',      stage: 'car',  visual: 'icon:armStop' },
+  { id: 'car.armLeft',      stage: 'car',  visual: 'arm:left' },
+  { id: 'car.armRight',     stage: 'car',  visual: 'arm:right' },
+  { id: 'car.armStop',      stage: 'car',  visual: 'arm:stop' },
   { id: 'car.key',          stage: 'car',  visual: 'icon:key' },
   { id: 'car.signalLeft',   stage: 'car',  visual: 'icon:signalLeft' },
   { id: 'car.signalRight',  stage: 'car',  visual: 'icon:signalRight' },

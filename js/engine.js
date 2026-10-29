@@ -26,6 +26,12 @@ function actOptions(id) {
     if (!q.visual || kind(q.visual) !== kind(p.visual) || seen.has(q.visual)) continue;
     seen.add(q.visual); out.push(q.id);
   }
+  // hand signals only have three pictures: fill up with car controls
+  for (const q of pool) {
+    if (out.length >= 4) break;
+    if (!q.visual || kind(q.visual) !== 'icon' || seen.has(q.visual)) continue;
+    seen.add(q.visual); out.push(q.id);
+  }
   return shuffle(out);
 }
 
@@ -77,6 +83,14 @@ function learnedPool() {
 export function buildPractice() {
   const ids = [...new Set([...weakIds(6), ...shuffle(learnedPool())])].slice(0, 10);
   return { stageId: null, index: 0, kind: 'practice', items: ids.map(quiz), total: 1 };
+}
+
+// Practice exactly these phrases (e.g. the commands missed in a drive test), twice each.
+export function buildPracticeFrom(ids) {
+  const list = [...new Set(ids)].filter((id) => byId[id] && byId[id].stage !== 'sys');
+  if (!list.length) return buildPractice();
+  const items = [...list.map(intro), ...shuffle(list).map(quiz), ...shuffle(list).map(quiz)];
+  return { stageId: null, index: 0, kind: 'practice', items, total: 1 };
 }
 
 // Quick reaction: commands with an action only, random voices, a timer on each.

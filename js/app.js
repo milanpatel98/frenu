@@ -2,11 +2,11 @@ import { STAGES, PHRASES, LANGUAGES, lessonsOf, EXAM_PASS } from './content.js';
 import { loadLanguage, t, phraseEn, phraseNative, phraseSay, esc, isEnglishUi } from './i18n.js';
 import { store, liveStreak } from './store.js';
 import { stopSpeaking, canListen, listen, requestMic, grade, words, playPhrase, warmAudio, VOICE_IDS } from './speech.js';
-import { buildLesson, buildPractice, buildDrill, buildExam, phrase, stageProgress, weakIds, shuffle } from './engine.js';
-import { visual, scene, icon, UI, mark, flag } from './visuals.js';
+import { buildLesson, buildPractice, buildPracticeFrom, buildDrill, buildExam, phrase, stageProgress, weakIds, shuffle } from './engine.js';
+import { visual, scene, icon, UI, mark, flag, steps, hasSteps } from './visuals.js';
 import { TERMS, PRIVACY } from './legal.js';
 
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const app = document.getElementById('app');
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DRILL_SECONDS = 5;
@@ -202,7 +202,7 @@ function heroVisual(id) {
   const p = phrase(id);
   const fallback = { talk: 'icon:talk', res: 'icon:flag', lane: 'scene:laneRight', park: 'scene:backUp' };
   const key = p.visual || fallback[p.stage] || 'icon:car';
-  if (key.startsWith('scene:')) return `<div class="hero-visual">${visual(key, { animate: !reduceMotion, dur: 3.2 })}</div>`;
+  if (key.startsWith('scene:') || key.startsWith('arm:')) return `<div class="hero-visual">${visual(key, { animate: !reduceMotion, dur: 3.2 })}</div>`;
   return `<div class="hero-visual is-icon">${icon(key.split(':')[1], 56)}</div>`;
 }
 
@@ -213,7 +213,7 @@ function tabBar(current) {
   on('tab-home', () => go('home'));
   on('tab-practice', () => go('practice'));
   on('tab-profile', () => go('profile'));
-  return `<nav class="tabs glass" aria-label="Roadword">${tab('home', t('nav.home'), UI.home)}${tab('practice', t('nav.practice'), UI.practice)}${tab('profile', t('nav.profile'), UI.profile)}</nav>`;
+  return `<nav class="tabs glass" aria-label="Frenu">${tab('home', t('nav.home'), UI.home)}${tab('practice', t('nav.practice'), UI.practice)}${tab('profile', t('nav.profile'), UI.profile)}</nav>`;
 }
 
 // ---------------------------------------------------------------- onboarding
@@ -226,7 +226,7 @@ function viewOnboarding() {
       .filter((l) => !q || `${l.nativeName} ${l.name}`.toLowerCase().includes(q.toLowerCase()))
       .map((l) => `<button class="lang" data-a="pick" data-code="${l.code}" aria-pressed="${l.code === sel}"><span><span class="native" lang="${l.code}">${esc(l.nativeName)}</span><br><span class="eng">${esc(l.name)}</span></span><span class="tick">${UI.check}</span></button>`).join('');
     render(`<main class="view onb">
-      <div class="bar"><span class="brand">${mark(24)} Roadword</span><span class="dots" aria-hidden="true">${dots}</span></div>
+      <div class="bar"><span class="brand">${mark(24)} Frenu</span><span class="dots" aria-hidden="true">${dots}</span></div>
       <div class="onb-hero">
         <span class="us-pill">${flag(20)}<span>${esc(t('app.badge'))}</span></span>
         <h1 class="en" lang="en">Know every word of your drive test.</h1>
@@ -334,7 +334,7 @@ function viewHome() {
   render(`${homeScene(maneuverOf(featured))}
   <main class="home-ui">
     <div class="bar">
-      <span class="brand">${mark(24)} Roadword ${flag(18)}</span>
+      <span class="brand">${mark(24)} Frenu ${flag(18)}</span>
       <button class="step-pill glass" data-a="stages" aria-label="${esc(t('home.stopOf', { n, total: STAGES.length }))}">${routeDots(cur)}<span>${n}/${STAGES.length}</span></button>
     </div>
     <div class="spacer"></div>
@@ -485,7 +485,15 @@ function exIntro(item) {
     ${heroVisual(item.id)}
     <div class="audio-row">${playButton(item.id)}${slowButton(item.id)}</div>
     ${phraseBlock(item.id, { big: true })}
+    ${doBlock(item.id)}
     <div class="lesson-foot"><button class="btn btn-primary btn-block" data-a="next">${esc(t('ex.gotIt'))}</button></div>`;
+}
+
+// The physical action, shown with the same buttons as the drive test.
+function doBlock(id) {
+  const v = phrase(id).visual;
+  if (!hasSteps(v)) return '';
+  return `<div class="do-block"><span class="pb-label">${esc(t('ex.doIt'))}</span>${steps(v, (k) => esc(t(k)))}</div>`;
 }
 
 // ---- Act: hear the command, tap what you do
@@ -518,7 +526,7 @@ function checkAct(item, chosen) {
   app.querySelectorAll('.vopt').forEach((o) => {
     o.setAttribute('aria-disabled', 'true');
     const v = phrase(o.dataset.id).visual;
-    if (v === phrase(item.id).visual) { o.classList.add('is-good'); if (!reduceMotion && v.startsWith('scene:')) o.innerHTML = visual(v, { animate: true, dur: 2.6 }); }
+    if (v === phrase(item.id).visual) { o.classList.add('is-good'); if (!reduceMotion && (v.startsWith('scene:') || v.startsWith('arm:'))) o.innerHTML = visual(v, { animate: true, dur: 2.6 }); }
     else if (o.dataset.id === chosen) o.classList.add('is-bad');
   });
   result(item, ok);
@@ -626,6 +634,7 @@ function result(item, ok, { almost = false, heard = '', retry = false, late = fa
       <span class="en" lang="en">${esc(phraseEn(item.id))}</span>
       ${phraseSay(item.id) ? `<span class="say">${esc(phraseSay(item.id))}</span>` : ''}
       ${isEnglishUi() ? '' : `<span class="tr">${esc(phraseNative(item.id))}</span>`}</div>
+    ${!ok && item.type !== 'speak' ? doBlock(item.id) : ''}
     <div style="display:flex;gap:10px">
       ${retry && item.type === 'speak' ? `<button class="btn btn-ghost" style="flex:1" data-fb="retry">${esc(t('ex.tryAgain'))}</button>` : ''}
       <button class="btn ${ok ? 'btn-good' : 'btn-bad'}" style="flex:2" data-fb="next">${esc(t('ex.continue'))}</button>
@@ -714,7 +723,7 @@ function viewDriveIntro() {
 
 function controlsSheet() {
   sheet(`<h2>${esc(t('drive.controls'))}</h2>
-    <p>${esc(t('drive.cSignal'))}</p><p>${esc(t('drive.cLook'))}</p><p>${esc(t('drive.cSteer'))}</p><p>${esc(t('drive.cPedals'))}</p><p>${esc(t('drive.cGear'))}</p>
+    <p>${esc(t('drive.cSignal'))}</p><p>${esc(t('drive.cArm'))}</p><p>${esc(t('drive.cLook'))}</p><p>${esc(t('drive.cSteer'))}</p><p>${esc(t('drive.cPedals'))}</p><p>${esc(t('drive.cGear'))}</p>
     <button class="btn btn-primary btn-block" data-sheet-a="close">${esc(t('gen.close'))}</button>`, { close: closeSheet });
 }
 
@@ -767,7 +776,7 @@ function viewDriveResult() {
   </main>`);
   chime(r.passed);
   on('again', () => go('drive'));
-  on('practice', () => begin(buildPractice()));
+  on('practice', () => { warmAudio(); begin(buildPracticeFrom(r.missed.map((m) => m.id).filter(Boolean))); });
   on('home', () => go('home'));
   on('play', (el) => playWithPulse(el));
 }
@@ -936,7 +945,7 @@ function viewPrefs() {
     </div>
 
     <div class="list"><button class="row" data-a="reset" style="color:var(--bad)"><span>${esc(t('set.reset'))}</span></button></div>
-    <p style="color:var(--ink-3);font-size:var(--t-xs);text-align:center;padding:8px 0">Roadword · ${esc(t('set.version', { v: VERSION }))} · © 2026 Patron LLC</p>
+    <p style="color:var(--ink-3);font-size:var(--t-xs);text-align:center;padding:8px 0">Frenu · ${esc(t('set.version', { v: VERSION }))} · © 2026 Patron LLC</p>
   </main>`);
   on('back', () => go('profile'));
   on('voice', (el) => {

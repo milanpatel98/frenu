@@ -1,4 +1,5 @@
 // Visual system: top-down road scenes (animated) and car-control icons.
+import { CTRL, UIB, FILLED } from './icons.js';
 // Everything is drawn from CSS variables so it follows light and dark themes.
 
 const SCENE_PATHS = {
@@ -96,78 +97,154 @@ function staticPose(name) {
   return poses[name] || 'translate(100 100)';
 }
 
-// Car-control icons, 48×48, stroke drawn in currentColor.
-const ICONS = {
-  car: '<path d="M10 30v-6l4-10h20l4 10v6M8 30h32v6H8zM14 36v4M34 36v4"/><circle cx="15" cy="31" r="1.5"/><circle cx="33" cy="31" r="1.5"/>',
-  window: '<path d="M8 34V20l8-10h24v24Z"/><path d="M14 20h20v-6"/><path d="M24 24v10m-4-4 4 4 4-4"/>',
-  armLeft: '<rect x="28" y="10" width="12" height="28" rx="3"/><path d="M28 22H8"/><circle cx="8" cy="22" r="2.5"/>',
-  armRight: '<rect x="28" y="10" width="12" height="28" rx="3"/><path d="M28 26H16V8"/><circle cx="16" cy="8" r="2.5"/>',
-  armStop: '<rect x="28" y="10" width="12" height="28" rx="3"/><path d="M28 20H16v20"/><circle cx="16" cy="40" r="2.5"/>',
-  key: '<circle cx="15" cy="24" r="7"/><path d="M22 24h20m-6 0v6m-6-6v4"/>',
-  signalLeft: '<path d="M22 12 8 24l14 12v-7h14v-10H22Z"/><path d="M42 18v12" class="blink"/>',
-  signalRight: '<path d="M26 12l14 12-14 12v-7H12v-10h14Z"/><path d="M6 18v12" class="blink"/>',
-  brake: '<rect x="12" y="10" width="24" height="18" rx="5"/><path d="M16 15h16M16 20h16M16 25h16M24 30v10m-5-5 5 5 5-5"/>',
-  horn: '<circle cx="20" cy="26" r="12"/><circle cx="20" cy="26" r="4"/><path d="M20 14v8M10 30l6-2M30 30l-6-2M36 14a10 10 0 0 1 0 12M40 10a16 16 0 0 1 0 20"/>',
-  parkingBrake: '<circle cx="24" cy="24" r="11"/><path d="M21 30V18h4a3.5 3.5 0 0 1 0 7h-4"/><path d="M9 14a18 18 0 0 0 0 20M39 14a18 18 0 0 1 0 20"/>',
-  flashers: '<path d="M24 8 42 38H6Z"/><path d="M24 18l9 15H15Z"/>',
-  headlights: '<path d="M20 12c-8 0-12 6-12 12s4 12 12 12Z"/><path d="M26 14h14M26 20h14M26 28h14M26 34h14"/>',
-  wipers: '<path d="M6 34c4-14 12-22 18-22s14 8 18 22Z"/><path d="M24 34 14 18"/><circle cx="24" cy="34" r="2"/>',
-  defroster: '<path d="M6 36c4-14 12-22 18-22s14 8 18 22Z"/><path d="M16 32c-2-3 2-5 0-8M24 32c-2-3 2-5 0-8M32 32c-2-3 2-5 0-8"/>',
-  auto: '<circle cx="24" cy="24" r="16"/><path d="M18 31l6-15 6 15M20.5 25h7"/>',
-  gearPark: '<rect x="14" y="6" width="20" height="36" rx="6"/><path d="M21 18v-7h3.5a3.5 3.5 0 0 1 0 7H21" stroke-width="3"/><path d="M20 26h8M20 31h8M20 36h8" opacity=".45"/>',
-  gearDrive: '<rect x="14" y="6" width="20" height="36" rx="6"/><path d="M20 26h8M20 31h8" opacity=".45"/><path d="M21 33V15h3a6 6 0 0 1 0 12h-3" stroke-width="3" transform="translate(0 2)"/>',
-  engineOff: '<path d="M24 8v14"/><path d="M15 14a14 14 0 1 0 18 0"/>',
-  seatbelt: '<circle cx="24" cy="10" r="5"/><path d="M14 42V24a10 10 0 0 1 20 0v18M16 20l18 22"/>',
-  talk: '<path d="M8 12h32v20H22l-8 8v-8H8Z"/><path d="M16 22h16"/>',
-  flag: '<path d="M12 42V8M12 8h24l-5 8 5 8H12"/>',
-  exam: '<rect x="10" y="8" width="28" height="34" rx="4"/><path d="M18 8V5h12v3M17 22l4 4 9-9M17 34h14"/>',
-  turnLeft: '<path d="M30 40V26a8 8 0 0 0-8-8H10m0 0 7-7m-7 7 7 7"/>',
-  laneLeft: '<path d="M30 40V30c0-6-12-6-12-12V8m0 0-6 6m6-6 6 6"/>',
-  parkSpace: '<rect x="10" y="8" width="28" height="32" rx="4"/><path d="M20 32V16h5a4.5 4.5 0 0 1 0 9h-5"/>',
+// Car-control icons: Phosphor duotone (see icons.js). Hand signals and gear letters are
+// drawn here in the same 256 grid, regular weight, with the same 20% fill.
+const S16 = 'fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"';
+const WIN = '<rect x="168" y="40" width="48" height="176" rx="16" opacity=".2"/><rect x="168" y="40" width="48" height="176" rx="16" ' + S16 + '/>';
+// ISO 2575 dashboard symbols (what the learner sees in a real car), same weight as Phosphor.
+const WS = 'M36 184C92 168 164 168 220 184L198 76C152 64 104 64 58 76Z';
+const wave = (x) => `<path d="M${x} 164c-12-10 12-20 0-30s12-20 0-30" ${S16}/><path d="M${x - 11} 112l11-14 11 14" ${S16}/>`;
+const CUSTOM = {
+  wipers: `<path d="${WS}" opacity=".2"/><path d="${WS}" ${S16}/><path d="M104 178 72 104M176 178 144 104" ${S16} stroke-width="18"/><circle cx="104" cy="178" r="10"/><circle cx="176" cy="178" r="10"/>`,
+  defroster: `<path d="${WS}" opacity=".2"/><path d="${WS}" ${S16}/>${wave(92)}${wave(128)}${wave(164)}`,
+  window: `<path d="M36 176V116l52-52h132v112Z" opacity=".2"/><path d="M36 176V116l52-52h132v112Z" ${S16}/><path d="M150 92v56m-24-24 24 24 24-24" ${S16} stroke-width="18"/>`,
+  armLeft: WIN + '<path d="M168 112H52" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round"/><circle cx="44" cy="112" r="18"/>',
+  armRight: WIN + '<path d="M168 136H96V60" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="48" r="18"/>',
+  armStop: WIN + '<path d="M168 96H96v100" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="208" r="18"/>',
+  gearPark: '<rect x="56" y="28" width="144" height="200" rx="44" opacity=".2"/><rect x="56" y="28" width="144" height="200" rx="44" ' + S16 + '/><path d="M108 176V80h30a30 30 0 0 1 0 60h-30" ' + S16 + ' stroke-width="20"/>',
+  gearDrive: '<rect x="56" y="28" width="144" height="200" rx="44" opacity=".2"/><rect x="56" y="28" width="144" height="200" rx="44" ' + S16 + '/><path d="M104 80v96h22a48 48 0 0 0 0-96Z" ' + S16 + ' stroke-width="20"/>',
 };
 
 export function icon(name, size = 48) {
-  const body = ICONS[name];
+  const body = CUSTOM[name] || CTRL[name];
   if (!body) return '';
-  return `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;
+  return `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false">${body}</svg>`;
 }
 
-// Render any visual key: "scene:turnLeft" or "icon:horn".
+// Hand signals, seen from behind the car: the driver's left arm out of the window.
+// left = straight out, right = bent up, stop = bent down (California DMV handbook).
+const ARM_ANGLE = { left: 0, right: 90, stop: -90 };
+export function armScene(kind, { animate = true } = {}) {
+  const a = ARM_ANGLE[kind] ?? 0;
+  const hint = kind === 'left'
+    ? '<path d="M150 40h-34m0 0 10-10m-10 10 10 10" />'
+    : kind === 'right' ? '<path d="M116 40h34m0 0-10-10m10 10-10 10" />'
+      : '<path d="M122 28v24M138 28v24" />';
+  const fore = animate
+    ? `<animateTransform attributeName="transform" type="rotate" values="0;0;${a};${a};0" keyTimes="0;.18;.42;.86;1" dur="3.2s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1;.4 0 .2 1;0 0 1 1;.4 0 .2 1"/>`
+    : '';
+  const upper = animate
+    ? '<animateTransform attributeName="transform" type="rotate" values="-75;0;0;0;-75" keyTimes="0;.18;.42;.86;1" dur="3.2s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .2 1;0 0 1 1;0 0 1 1;.4 0 .2 1"/>'
+    : '';
+  return `<svg class="scene arm" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+    <rect width="200" height="200" fill="var(--sc-ground)"/>
+    <path d="M0 168h200v32H0z" fill="var(--sc-road)"/>
+    <g fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".9">${hint}</g>
+    <g transform="translate(18 0)">
+      <rect x="44" y="154" width="22" height="20" rx="5" fill="#1D1F22"/><rect x="138" y="154" width="22" height="20" rx="5" fill="#1D1F22"/>
+      <path d="M62 104 74 70c2-6 6-9 12-9h44c6 0 10 3 12 9l12 34Z" fill="var(--accent)"/>
+      <path d="M71 101 80 74c1-4 4-6 8-6h40c4 0 7 2 8 6l9 27Z" fill="var(--sc-glass)"/>
+      <circle cx="91" cy="84" r="9.5" fill="#1D1F22" opacity=".8"/>
+      <rect x="38" y="102" width="128" height="56" rx="14" fill="var(--accent)"/>
+      <rect x="46" y="116" width="20" height="10" rx="3" fill="#D8433A"/><rect x="138" y="116" width="20" height="10" rx="3" fill="#D8433A"/>
+      <rect x="86" y="132" width="32" height="12" rx="3" fill="#F4F1E8"/>
+      <g transform="translate(64 96)">
+        <g>${upper}
+          <path d="M0 0h-28" stroke="#3F5F8F" stroke-width="13" stroke-linecap="round"/>
+          <g transform="translate(-28 0)">
+            <g ${animate ? '' : `transform="rotate(${a})"`}>${fore}
+              <path d="M0 0h-26" stroke="#D9A27A" stroke-width="11" stroke-linecap="round"/>
+              <path d="M-27 -6c-6 0-9 3-9 6s3 6 9 6" fill="#D9A27A"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>`;
+}
+
+// Render any visual key: "scene:turnLeft", "arm:left" or "icon:horn".
 export function visual(key, opts) {
   if (!key) return '';
   const [kind, name] = key.split(':');
-  return kind === 'scene' ? scene(name, opts) : `<div class="icon-tile">${icon(name, 64)}</div>`;
+  if (kind === 'scene') return scene(name, opts);
+  if (kind === 'arm') return armScene(name, opts);
+  return `<div class="icon-tile">${icon(name, 64)}</div>`;
+}
+
+// What the learner physically does, as a row of the same controls used in the drive test.
+const STEPS = {
+  'scene:turnLeft': ['sigL', 'look', 'steerL'], 'scene:turnRight': ['sigR', 'look', 'steerR'],
+  'scene:laneLeft': ['sigL', 'look', 'steerL'], 'scene:laneRight': ['sigR', 'look', 'steerR'],
+  'scene:pullOver': ['sigR', 'look', 'steerR', 'brake'], 'scene:merge': ['sigL', 'look', 'gas'],
+  'scene:backUp': ['gearR', 'look', 'gas'], 'scene:stop': ['brake'], 'scene:straight': ['gas'],
+  'scene:parkLot': ['sigR', 'steerR'], 'scene:parkSpace': ['steerR', 'brake'],
+  'icon:gearPark': ['brake', 'gearP'], 'icon:gearDrive': ['brake', 'gearD'], 'icon:engineOff': ['gearP', 'engine'],
+  'arm:left': ['armLeft'], 'arm:right': ['armRight'], 'arm:stop': ['armStop'],
+};
+const STEP_LABEL = { look: 'ctl.look', brake: 'ctl.brake', gas: 'ctl.gas', engine: 'ctl.engine', armLeft: 'ctl.armLeft', armRight: 'ctl.armRight', armStop: 'ctl.armStop' };
+const STEP_ICON = { sigL: ['arrowL', FILLED], sigR: ['arrowR', FILLED], look: ['eye', UIB], steerL: ['steer', UIB], steerR: ['steer', UIB], brake: ['brake', CTRL], gas: ['gas', null], engine: ['power', UIB], armLeft: ['armLeft', null], armRight: ['armRight', null], armStop: ['armStop', null] };
+const GAS = '<rect x="80" y="24" width="96" height="208" rx="32" opacity=".2"/><rect x="80" y="24" width="96" height="208" rx="32" ' + S16 + '/><path d="M108 76h40M108 112h40M108 148h40" ' + S16 + '/>';
+function stepGlyph(s) {
+  const [n, src] = STEP_ICON[s];
+  const body = s === 'gas' ? GAS : src ? src[n] : CUSTOM[n];
+  const svg = (b) => `<svg width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">${b}</svg>`;
+  if (s === 'steerL') return svg(UIB.turnL) + svg(body);
+  if (s === 'steerR') return svg(body) + svg(UIB.turnR);
+  return svg(body);
+}
+export function hasSteps(key) { return !!STEPS[key]; }
+export function steps(key, t) {
+  const list = STEPS[key];
+  if (!list) return '';
+  return `<ol class="steps" aria-label="${t('ex.doIt')}">${list.map((s, i) => {
+    const gear = s.startsWith('gear') ? s.slice(4) : null;
+    const g = gear ? `<b class="step-gear">${gear}</b>` : stepGlyph(s);
+    const lbl = STEP_LABEL[s] ? t(STEP_LABEL[s]) : '';
+    const cls = s.startsWith('sig') ? 'sig' : s === 'brake' ? 'brake' : s === 'gas' ? 'gas' : '';
+    return `${i ? '<li class="step-arrow" aria-hidden="true">›</li>' : ''}<li class="step ${cls}">${g}${lbl ? `<span>${lbl}</span>` : ''}</li>`;
+  }).join('')}</ol>`;
 }
 
 export function visualKind(key) {
   return key ? key.split(':')[0] : null;
 }
 
-// Small UI glyphs
+// Small UI glyphs: Phosphor bold (see icons.js).
+const g = (name, size, src = UIB) => `<svg width="${size}" height="${size}" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false">${src[name]}</svg>`;
 export const UI = {
-  speaker: '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  slow: '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16c0-4.5 3.5-8 8-8s7 3 7 7h2.5a1.5 1.5 0 0 0 0-3"/><path d="M4 16h14M7 16v3M15 16v3"/></svg>',
-  mic: '<svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4m-3 0h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  close: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
-  back: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  info: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>',
-  gear: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>',
-  home: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
-  practice: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>',
-  profile: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
-  book: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Zm0 13a3 3 0 0 1 3-3h11"/></svg>',
-  bolt: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 3 5 14h6l-1 7 8-11h-6Z"/></svg>',
-  check: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  x: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
-  lock: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
-  flame: '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9Z" fill="currentColor"/></svg>',
-  search: '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
-  globe: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>',
-  chevron: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  speaker: g('speaker', 24),
+  mic: g('mic', 32),
+  close: g('close', 22),
+  back: g('back', 22),
+  info: g('info', 22),
+  gear: g('gear', 22),
+  home: g('home', 22),
+  practice: g('practice', 22),
+  profile: g('profile', 22),
+  book: g('book', 22),
+  bolt: g('bolt', 22),
+  check: g('check', 22),
+  x: g('x', 22),
+  lock: g('lock', 18),
+  flame: g('flame', 16),
+  search: g('search', 20),
+  globe: g('globe', 18),
+  chevron: g('chevron', 18),
+  repeat: g('repeat', 20),
+  eye: g('eye', 26),
+  steer: g('steer', 26),
+  power: g('power', 22),
+  car: g('car', 22),
+  flag: g('flag', 22),
+  arrowL: g('arrowL', 26, FILLED), arrowR: g('arrowR', 26, FILLED),
+  slow: `<svg width="26" height="26" viewBox="0 0 256 256" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><path d="M44 160a80 80 0 0 1 160 0Z"/><path d="M84 160l24-44h40l24 44M108 116l20-28 20 28"/><path d="M204 148c10 0 20-6 24-18 2-8-4-14-12-14-10 0-14 10-16 20"/><path d="M72 160v28M176 160v28M44 160l-20 10"/></svg>`,
 };
+export const glyph = g;
 
+// Frenu mark: an F whose top bar is a turn arrow.
 export function mark(size = 22) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M20 25V16a5 5 0 0 0-5-5H9m0 0 4-4m-4 4 4 4" fill="none" stroke="var(--on-accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="var(--accent)"/><path d="M196 404V214a54 54 0 0 1 54-54h96M300 112l50 48-50 48M196 286h96" fill="none" stroke="var(--on-accent)" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
 // U.S. flag (13 stripes, blue field with a star grid)

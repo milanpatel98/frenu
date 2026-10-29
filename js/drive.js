@@ -1,7 +1,7 @@
-// Roadword drive test: a 3D town, a real examiner voice, and the learner's own
+// Frenu drive test: a 3D town, a real examiner voice, and the learner's own
 // actions (signal, steer, brake, gear, blind-spot check). Scored like the DMV
 // score sheet: up to 15 errors, no critical errors.
-import { icon } from './visuals.js';
+import { icon, UI, armScene } from './visuals.js';
 import { VOICE_IDS } from './speech.js';
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
@@ -53,10 +53,14 @@ const PRE_LABEL = {
   horn: 'ctl.horn', wipers: 'ctl.wipers', defroster: 'ctl.defrost', flashers: 'ctl.flashers', headlights: 'ctl.lights', parkingBrake: 'ctl.pbrake',
   armLeft: 'ctl.armLeft', armRight: 'ctl.armRight', armStop: 'ctl.armStop', signalLeft: null, signalRight: null, brake: 'ctl.brake', window: 'ctl.window',
 };
-const CRITICAL = new Set(['err.noLook', 'err.ranStop']);
+const CRITICAL = new Set(['err.noLook', 'err.ranStop', 'err.rolling']);
+const ARMS = PREDRIVE.filter(([, c]) => c.startsWith('arm'));
+const STOP_ZONE = 20;   // a full stop counts within this many metres before the limit line
+const STOPPED = 0.15;   // m/s: below this the car is fully stopped
 
 export function start(opts) {
   const { root, length, t, hear, stopAudio, onExit, onDone } = opts;
+  const tr = t; // `t` is shadowed by time variables inside the physics loop
   const voice = pick(VOICE_IDS);
   const BLOCKS = length === 'full' ? 18 : 8;
 
@@ -64,13 +68,15 @@ export function start(opts) {
   root.innerHTML = `<div class="drv" id="drv">
     <canvas class="drv-gl" id="drvGl" aria-label="${esc(t('drive.title'))}"></canvas>
     <div class="drv-top">
-      <button class="drv-chip" id="dExit" aria-label="${esc(t('ex.quit'))}"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+      <button class="drv-chip" id="dExit" aria-label="${esc(t('ex.quit'))}">${UI.close}</button>
       <span class="drv-chip" id="dTime">0:00</span>
       <span class="drv-chip" id="dSpeed">0 mph</span>
       <span class="drv-chip" id="dErr" aria-label="${esc(t('drive.errors'))}"><i class="dot"></i><b>0</b>/15</span>
     </div>
     <div class="drv-voice" id="dVoice" aria-hidden="true"><span></span><span></span><span></span></div>
-    <button class="drv-repeat" id="dRepeat" aria-label="Can you repeat that, please?"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="en">Repeat</span></button>
+    <button class="drv-repeat" id="dRepeat" aria-label="Can you repeat that, please?">${UI.repeat}<span lang="en">Repeat</span></button>
+    <div class="drv-toast" id="dToast" aria-live="polite"></div>
+    <div class="drv-arm" id="dArm" aria-hidden="true"></div>
     <div class="drv-panel" id="dPanel"></div>
     <div class="drv-cover" id="dCover" hidden></div>
   </div>`;
@@ -251,6 +257,18 @@ export function start(opts) {
     return say(id).then(() => { if (S.task && S.task.id === id) S.task.heardAt = now(); });
   }
   function closeTask() { if (S.task) { if (!S.task.failed) S.okCmds++; S.task = null; } }
+  let toastTimer = 0;
+  function flash(text, kind = 'good') {
+    const el = $('dToast'); if (!el) return;
+    el.textContent = text; el.className = `drv-toast show ${kind}`;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.className = 'drv-toast'; }, 1400);
+  }
+  let armTimer = 0;
+  function showArm(kind) {
+    const el = $('dArm'); if (!el) return;
+    el.innerHTML = armScene(kind, { animate: false }); el.classList.add('show');
+    clearTimeout(armTimer); armTimer = setTimeout(() => el.classList.remove('show'), 1500);
+  }
 
   // ------------------------------------------------------------------ panels
   const ic = (name, size = 26) => icon(name, size);
@@ -268,9 +286,9 @@ export function start(opts) {
     panel.className = 'drv-panel go';
     panel.innerHTML = `
       <div class="drv-row top">
-        ${btn('sigL', '<svg width="26" height="26" viewBox="0 0 24 24"><path d="M10 5 3 12l7 7v-4h11V9H10Z" fill="currentColor"/></svg>', 'sig', 'Left turn signal')}
-        ${btn('look', '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><span>' + esc(t('ctl.look')) + '</span>', 'look', t('ctl.look'))}
-        ${btn('sigR', '<svg width="26" height="26" viewBox="0 0 24 24"><path d="M14 5l7 7-7 7v-4H3V9h11Z" fill="currentColor"/></svg>', 'sig', 'Right turn signal')}
+        ${btn('sigL', UI.arrowL, 'sig', 'Left turn signal')}
+        ${btn('look', UI.eye + '<span>' + esc(t('ctl.look')) + '</span>', 'look', t('ctl.look'))}
+        ${btn('sigR', UI.arrowR, 'sig', 'Right turn signal')}
       </div>
       <div class="drv-row mid">
         <div class="gear" role="group" aria-label="Gear">${['P', 'R', 'D'].map((g) => `<button class="gbtn" data-c="gear" data-g="${g}" aria-pressed="${S.gear === g}">${g}</button>`).join('')}</div>
@@ -300,10 +318,13 @@ export function start(opts) {
     const c = b.dataset.c;
     b.classList.add('press'); setTimeout(() => b.classList.remove('press'), 160);
     if (S.phase === 'predrive') return predriveTap(c);
-    if (c === 'brake') { S.brake = true; return; }
+    if (c === 'brake') { S.brake = true; S.brakeT = now(); b.classList.add('held'); return; }
     control(c, b);
   });
-  const release = (e) => { const b = e.target.closest && e.target.closest('[data-c="brake"]'); if (b || e.type === 'pointercancel' || e.type === 'pointerup') S.brake = false; };
+  const release = (e) => {
+    const b = e.target.closest && e.target.closest('[data-c="brake"]');
+    if (b || e.type === 'pointercancel' || e.type === 'pointerup') { S.brake = false; const p = panel.querySelector('[data-c="brake"]'); if (p) p.classList.remove('held'); }
+  };
   panel.addEventListener('pointerup', release); panel.addEventListener('pointercancel', release); panel.addEventListener('pointerleave', release);
   $('dRepeat').addEventListener('click', () => { if (S.lastSaid && !S.speaking) say(S.lastSaid); });
   $('dExit').addEventListener('click', () => confirmExit());
@@ -329,7 +350,8 @@ export function start(opts) {
   let preQ = [];
   function runPredrive() {
     predrivePanel();
-    preQ = shuffle(PREDRIVE).slice(0, 5);
+    // the real test always asks for all three hand signals, plus a few controls
+    preQ = shuffle([...ARMS, ...shuffle(PREDRIVE.filter(([, c]) => !c.startsWith('arm'))).slice(0, 3)]);
     say('sys.begin').then(() => nextPre());
   }
   function nextPre() {
@@ -339,6 +361,7 @@ export function start(opts) {
     S.task.deadline = null;
   }
   function predriveTap(c) {
+    if (c.startsWith('arm')) showArm(c === 'armLeft' ? 'left' : c === 'armRight' ? 'right' : 'stop');
     if (!S.task || S.task.kind !== 'pre' || !S.task.heardAt) return;
     const ok = c === S.task.ctl;
     if (!ok) error('err.wrongControl', S.task.id);
@@ -400,11 +423,12 @@ export function start(opts) {
 
   function onSteer(side) {
     S.steerVis = side === 'L' ? -1 : 1;
-    if (S.mode !== 'cruise') return;
+    if (S.mode !== 'cruise' && S.mode !== 'hold') return;
     const c = nextCenter();
     const toDecision = (c - W2) - along();
     const turnCalled = S.task && S.task.kind === 'turn';
-    if ((turnCalled || toDecision < 30) && !S.curve) { S.intent = side; return; } // a turn at the coming corner
+    // a turn at the coming corner (also while waiting at a stop sign)
+    if ((turnCalled || toDecision < 30 || S.mode === 'hold') && !S.curve) { S.intent = side; return; }
     if (S.lat) return;
     const o = offset();
     const tk = S.task;
@@ -478,7 +502,7 @@ export function start(opts) {
     const since = t - tk.heardAt;
     if (tk.kind === 'lane' && since > 9) { error('err.late', tk.id); closeTask(); }
     if (tk.kind === 'stop') {
-      if (S.v < 0.3) { closeTask(); S.mode = 'hold'; setTimeout(() => { if (!S.ended) newTask('go', pick(SAY.straight)); }, 1800); }
+      if (S.v < STOPPED) { closeTask(); flash(tr('drive.fullStop')); S.mode = 'hold'; setTimeout(() => { if (!S.ended) newTask('go', pick(SAY.straight)); }, 1800); }
       else if (since > 7) { error('err.noStop', tk.id); closeTask(); }
     }
     if (tk.kind === 'go' && since > 8) { error('err.late', tk.id); closeTask(); if (S.mode === 'hold') S.mode = 'cruise'; }
@@ -517,19 +541,27 @@ export function start(opts) {
       if (S.brake) { S.v = Math.min(0, S.v + 6 * dt); if (S.v > -0.05) { S.v = 0; S.mode = 'curbStop'; } }
       else S.v = Math.max(-1.8, S.v - 1.5 * dt);
     } else if (S.brake) {
-      S.v = Math.max(0, S.v - 6.5 * dt);
+      // gentle at first, firmer the longer the pedal is held
+      const held = Math.min(1, (now() - (S.brakeT || now())) / 0.7);
+      S.v = Math.max(0, S.v - (3 + 5 * held) * dt);
+      if (S.v < STOPPED) S.v = 0;
     } else if (S.mode === 'cruise') {
       const pulling = S.task && S.task.kind === 'pull' && S.task.atCurb;
       const turning = S.plan && S.plan.turn !== 'S' && S.plan.said && !S.plan.done;
       const target = S.curve ? 5.5 : pulling ? 3.5 : turning ? 7.5 : CRUISE;
       S.v += Math.sign(target - S.v) * Math.min(Math.abs(target - S.v), (target > S.v ? 2.2 : 4) * dt);
     } else S.v = Math.max(0, S.v - 6 * dt);
-    if (S.mode === 'cruise' && S.v < 0.3 && S.brake) {
+    if (S.mode === 'cruise' && S.v < STOPPED && S.brake) {
       // stopped by the driver
       const pl = S.plan;
-      const nearStop = pl && pl.stop && !pl.passedLine && (pl.c - W2 - 1.2) - along() < 14;
+      const toLine = pl ? (pl.c - W2 - 1.2) - along() : 99;
+      const nearStop = pl && pl.stop && !pl.stopped && (!pl.passedLine ? toLine < STOP_ZONE : pl.overPending);
       const asked = S.task && (S.task.kind === 'stop' || S.task.kind === 'pull');
-      if (nearStop) { pl.stopped = true; S.mode = 'hold'; }
+      if (nearStop) {
+        pl.stopped = true; S.mode = 'hold';
+        if (pl.overPending) { pl.overPending = false; error('err.overLine', pl.cmdId || null); flash(tr('err.overLine'), 'bad'); }
+        else flash(tr('drive.fullStop'));
+      } else if (pl && pl.stop && !pl.passedLine && toLine < STOP_ZONE * 2 && !asked) { S.mode = 'hold'; flash(tr('drive.pullUp'), 'info'); }
       else if (asked) { /* task logic handles */ }
       else if (S.stoppedAt < 0) S.stoppedAt = t;
     }
@@ -578,10 +610,16 @@ export function start(opts) {
         else if (Math.random() < 0.5) { pl.cmdId = pick(SAY.straight); newTask('turn', pl.cmdId, { turn: 'S' }); }
         else { pl.silent = true; S.cmds++; S.task = { kind: 'turn', turn: 'S', id: 'dir.follow', failed: false, heardAt: now(), silent: true }; }
       }
+      if (pl.stop && !pl.passedLine && toLine > 0 && toLine < STOP_ZONE) pl.minV = Math.min(pl.minV ?? 99, S.v);
       if (pl.stop && !pl.passedLine && toLine <= 0) {
         pl.passedLine = true;
-        if (!pl.stopped) error('err.ranStop', pl.cmdId || null);
+        if (!pl.stopped) {
+          // still braking just over the line: decide once the car stops
+          if (S.brake && S.v < 4) pl.overPending = true;
+          else { const roll = (pl.minV ?? 99) < 2.2; error(roll ? 'err.rolling' : 'err.ranStop', pl.cmdId || null); flash(tr(roll ? 'err.rolling' : 'err.ranStop'), 'bad'); }
+        }
       }
+      if (pl.overPending && toLine < -4) { pl.overPending = false; error('err.ranStop', pl.cmdId || null); flash(tr('err.ranStop'), 'bad'); }
       if (toDecision <= 0) {
         pl.done = true;
         const want = pl.turn, got = S.intent || 'S';
