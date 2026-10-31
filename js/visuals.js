@@ -242,9 +242,9 @@ export const UI = {
 };
 export const glyph = g;
 
-// Frenu mark: an F whose top bar is a turn arrow.
+// Mivaru mark: an M drawn as a road, with the amber lane line down its middle.
 export function mark(size = 22) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="var(--accent)"/><path d="M196 404V214a54 54 0 0 1 54-54h96M300 112l50 48-50 48M196 286h96" fill="none" stroke="var(--on-accent)" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#FFF1D6"/><path d="M128 388V156l128 140 128-140v232" fill="none" stroke="#121417" stroke-width="74" stroke-linecap="round" stroke-linejoin="round"/><path d="M128 370V156l128 140 128-140v214" fill="none" stroke="#FFB224" stroke-width="10" stroke-linecap="round" stroke-dasharray="22 20"/></svg>`;
 }
 
 // U.S. flag (13 stripes, blue field with a star grid)

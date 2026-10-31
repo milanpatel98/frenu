@@ -1,4 +1,4 @@
-// Frenu drive test: a 3D town, a real examiner voice, and the learner's own
+// Mivaru drive test: a 3D town, a real examiner voice, and the learner's own
 // actions (signal, steer, brake, gear, blind-spot check). Scored like the DMV
 // score sheet: up to 15 errors, no critical errors.
 import { icon, UI, armScene } from './visuals.js';

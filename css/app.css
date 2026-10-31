@@ -1,4 +1,4 @@
-/* Frenu
+/* Mivaru
    Layout: one column, phone first (max 560px), content left-aligned; the road scene is the only big visual.
    One accent (signal amber) marks "you are here" and the main action. Green and red are only for right and wrong. */
 :root {
@@ -730,3 +730,4 @@ select.select { appearance: none; background: transparent; border: 0; color: var
   .home-side .stage-row .ico { width: 40px; height: 40px; }
 }
 @media (min-width: 1024px) and (max-height: 900px) { .home-side .feature { display: none; } }
+@media (min-width: 768px) { .tab span { text-align: start; line-height: 1.25; } .tab { height: auto; min-height: 46px; padding-block: 8px; } }

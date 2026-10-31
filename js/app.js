@@ -6,7 +6,7 @@ import { buildLesson, buildPractice, buildPracticeFrom, buildDrill, buildExam, p
 import { visual, scene, icon, UI, mark, flag, steps, hasSteps } from './visuals.js';
 import { TERMS, PRIVACY } from './legal.js';
 
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 const app = document.getElementById('app');
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DRILL_SECONDS = 5;
@@ -222,8 +222,8 @@ function tabBar(current, { sideOnly = false } = {}) {
   on('tab-drive', () => (unlocked('exam') ? go('drive') : toast(t('stage.exam.info'))));
   const lang = LANGUAGES.find((l) => l.code === store.get().lang);
   on('tab-lang', () => languageSheet());
-  return `<nav class="tabs glass ${sideOnly ? 'side-only' : ''}" aria-label="Frenu">
-    <span class="side-brand brand">${mark(28)} Frenu ${flag(18)}</span>
+  return `<nav class="tabs glass ${sideOnly ? 'side-only' : ''}" aria-label="Mivaru">
+    <span class="side-brand brand">${mark(28)} Mivaru ${flag(18)}</span>
     ${tab('home', t('nav.home'), UI.home)}${tab('practice', t('nav.practice'), UI.practice)}${tab('profile', t('nav.profile'), UI.profile)}
     <span class="side-sep" aria-hidden="true"></span>
     ${tab('drive', t('drive.title'), UI.car, 'side')}${tab('phrases', t('home.phrases'), UI.book, 'side')}${tab('checklist', t('chk.title'), UI.check, 'side')}${tab('prefs', t('set.title'), UI.gear, 'side')}
@@ -241,7 +241,7 @@ function viewOnboarding() {
       .filter((l) => !q || `${l.nativeName} ${l.name}`.toLowerCase().includes(q.toLowerCase()))
       .map((l) => `<button class="lang" data-a="pick" data-code="${l.code}" aria-pressed="${l.code === sel}"><span><span class="native" lang="${l.code}">${esc(l.nativeName)}</span><br><span class="eng">${esc(l.name)}</span></span><span class="tick">${UI.check}</span></button>`).join('');
     render(`<main class="view onb onb-lang">
-      <div class="bar"><span class="brand">${mark(24)} Frenu</span><span class="dots" aria-hidden="true">${dots}</span></div>
+      <div class="bar"><span class="brand">${mark(24)} Mivaru</span><span class="dots" aria-hidden="true">${dots}</span></div>
       <div class="split onb-split"><div class="col-a">
       <div class="onb-hero">
         <span class="us-pill">${flag(20)}<span>${esc(t('app.badge'))}</span></span>
@@ -352,7 +352,7 @@ function viewHome() {
   render(`${homeScene(maneuverOf(featured))}
   <main class="home-ui">
     <div class="bar">
-      <span class="brand">${mark(24)} Frenu ${flag(18)}</span>
+      <span class="brand">${mark(24)} Mivaru ${flag(18)}</span>
       <button class="step-pill glass" data-a="stages" aria-label="${esc(t('home.stopOf', { n, total: STAGES.length }))}">${routeDots(cur)}<span>${n}/${STAGES.length}</span></button>
     </div>
     <div class="spacer"></div>
@@ -987,7 +987,7 @@ function viewPrefs() {
     </div>
 
     <div class="list"><button class="row" data-a="reset" style="color:var(--bad)"><span>${esc(t('set.reset'))}</span></button></div>
-    <p style="color:var(--ink-3);font-size:var(--t-xs);text-align:center;padding:8px 0">Frenu · ${esc(t('set.version', { v: VERSION }))} · © 2026 Patron LLC</p>
+    <p style="color:var(--ink-3);font-size:var(--t-xs);text-align:center;padding:8px 0">Mivaru · ${esc(t('set.version', { v: VERSION }))} · © 2026 Patron LLC</p>
     </div></div>
   </main>`, { side: 'prefs' });
   on('back', () => go('profile'));

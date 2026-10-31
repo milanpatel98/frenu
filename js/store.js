@@ -1,8 +1,8 @@
 // Saved state lives only on this device (localStorage). Every access is guarded:
 // private windows and blocked storage must never break the app.
 
-const KEY = 'frenu.v1';
-const OLD_KEY = 'roadword.v1';
+const KEY = 'mivaru.v1';
+const OLD_KEYS = ['frenu.v1', 'roadword.v1'];
 
 const DEFAULTS = {
   lang: null,
@@ -26,7 +26,7 @@ function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
 function load() {
   try {
-    const raw = localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY);
+    const raw = localStorage.getItem(KEY) || OLD_KEYS.map((k) => localStorage.getItem(k)).find(Boolean);
     if (!raw) return clone(DEFAULTS);
     const saved = JSON.parse(raw);
     return { ...clone(DEFAULTS), ...saved, settings: { ...DEFAULTS.settings, ...(saved.settings || {}) } };

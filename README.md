@@ -1,8 +1,8 @@
-# Frenu
+# Mivaru
 
 The English of your drive test, in your language.
 
-Frenu teaches the exact phrases a California driving examiner says during the behind-the-wheel test. Learners pick their own language, hear each command in a natural examiner voice, and practice doing the right action until it is automatic. A 3D drive test gives commands in English only, like the real test.
+Mivaru teaches the exact phrases a California driving examiner says during the behind-the-wheel test. Learners pick their own language, hear each command in a natural examiner voice, and practice doing the right action until it is automatic. A 3D drive test gives commands in English only, like the real test.
 
 ## Features
 
@@ -82,6 +82,6 @@ fonts/                Brand font (Unbounded, OFL)
 
 - Replace `[CONTACT EMAIL]` in `js/legal.js`.
 - Have a native speaker review each translation.
-- Phrases are based on the California DMV examiner phrase sheet (DL 80). Frenu is not affiliated with the California DMV.
+- Phrases are based on the California DMV examiner phrase sheet (DL 80). Mivaru is not affiliated with the California DMV.
 
 © 2026 Patron LLC. All rights reserved.
