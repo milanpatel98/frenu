@@ -6,7 +6,7 @@ import { buildLesson, buildPractice, buildPracticeFrom, buildDrill, buildExam, p
 import { visual, scene, icon, UI, mark, flag, steps, hasSteps } from './visuals.js';
 import { TERMS, PRIVACY } from './legal.js';
 
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 const app = document.getElementById('app');
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DRILL_SECONDS = 5;
@@ -21,11 +21,14 @@ let driveResult = null;
 
 function on(name, fn) { actions[name] = fn; }
 
-function render(html, { tabs = null } = {}) {
+function render(html, { tabs = null, side = null } = {}) {
   stopSpeaking();
   clearTimer();
   actions = {};
-  app.innerHTML = html + (tabs ? tabBar(tabs) : '');
+  // tabs: bottom bar on phones + sidebar on wide screens. side: sidebar only (wide screens).
+  const nav = tabs || side;
+  app.classList.toggle('with-side', !!nav);
+  app.innerHTML = html + (nav ? tabBar(nav, { sideOnly: !tabs }) : '');
   window.scrollTo(0, 0);
   const focusTarget = app.querySelector('[data-autofocus]');
   if (focusTarget) setTimeout(() => focusTarget.focus(), 50);
@@ -208,12 +211,24 @@ function heroVisual(id) {
 
 // ---------------------------------------------------------------- tab bar
 
-function tabBar(current) {
-  const tab = (name, label, svg) => `<button class="tab" data-a="tab-${name}" ${current === name ? 'aria-current="page"' : ''}>${svg}<span>${esc(label)}</span></button>`;
+function tabBar(current, { sideOnly = false } = {}) {
+  const tab = (name, label, svg, cls = '') => `<button class="tab ${cls}" data-a="tab-${name}" ${current === name ? 'aria-current="page"' : ''}>${svg}<span>${esc(label)}</span></button>`;
   on('tab-home', () => go('home'));
   on('tab-practice', () => go('practice'));
   on('tab-profile', () => go('profile'));
-  return `<nav class="tabs glass" aria-label="Frenu">${tab('home', t('nav.home'), UI.home)}${tab('practice', t('nav.practice'), UI.practice)}${tab('profile', t('nav.profile'), UI.profile)}</nav>`;
+  on('tab-phrases', () => go('phrases'));
+  on('tab-checklist', () => go('checklist'));
+  on('tab-prefs', () => go('prefs'));
+  on('tab-drive', () => (unlocked('exam') ? go('drive') : toast(t('stage.exam.info'))));
+  const lang = LANGUAGES.find((l) => l.code === store.get().lang);
+  on('tab-lang', () => languageSheet());
+  return `<nav class="tabs glass ${sideOnly ? 'side-only' : ''}" aria-label="Frenu">
+    <span class="side-brand brand">${mark(28)} Frenu ${flag(18)}</span>
+    ${tab('home', t('nav.home'), UI.home)}${tab('practice', t('nav.practice'), UI.practice)}${tab('profile', t('nav.profile'), UI.profile)}
+    <span class="side-sep" aria-hidden="true"></span>
+    ${tab('drive', t('drive.title'), UI.car, 'side')}${tab('phrases', t('home.phrases'), UI.book, 'side')}${tab('checklist', t('chk.title'), UI.check, 'side')}${tab('prefs', t('set.title'), UI.gear, 'side')}
+    <button class="side-lang side" data-a="tab-lang">${UI.globe}<span>${esc(lang ? lang.nativeName : 'English')}</span></button>
+  </nav>`;
 }
 
 // ---------------------------------------------------------------- onboarding
@@ -225,18 +240,21 @@ function viewOnboarding() {
     const list = (q = '') => LANGUAGES
       .filter((l) => !q || `${l.nativeName} ${l.name}`.toLowerCase().includes(q.toLowerCase()))
       .map((l) => `<button class="lang" data-a="pick" data-code="${l.code}" aria-pressed="${l.code === sel}"><span><span class="native" lang="${l.code}">${esc(l.nativeName)}</span><br><span class="eng">${esc(l.name)}</span></span><span class="tick">${UI.check}</span></button>`).join('');
-    render(`<main class="view onb">
+    render(`<main class="view onb onb-lang">
       <div class="bar"><span class="brand">${mark(24)} Frenu</span><span class="dots" aria-hidden="true">${dots}</span></div>
+      <div class="split onb-split"><div class="col-a">
       <div class="onb-hero">
         <span class="us-pill">${flag(20)}<span>${esc(t('app.badge'))}</span></span>
         <h1 class="en" lang="en">Know every word of your drive test.</h1>
         ${sel && sel !== 'en' ? `<p class="tr">${esc(t('onb.welcome'))}</p>` : ''}
       </div>
       <div class="onb-scene">${scene('turnLeft', { animate: !reduceMotion, dur: 4.2 })}</div>
+      </div><div class="col-b">
       <h2 class="section-label" id="langLabel">${esc(t('onb.chooseLanguage'))}</h2>
       <div class="search">${UI.search}<input type="search" id="langSearch" data-input="search" placeholder="${esc(t('onb.searchLanguage'))}" aria-labelledby="langLabel" autocomplete="off"></div>
       <div class="lang-list" id="langList">${list()}</div>
       <div class="sticky-foot"><button class="btn btn-primary btn-block" data-a="next" ${sel ? '' : 'aria-disabled="true"'}>${esc(t('onb.continue'))}</button></div>
+      </div></div>
     </main>`);
     on('search', (el) => { document.getElementById('langList').innerHTML = list(el.value); });
     on('pick', async (el) => {
@@ -348,6 +366,11 @@ function viewHome() {
       <button class="btn btn-primary btn-block" data-a="${act}">${esc(label)}</button>
     </section>
     ${!cur.exam ? `<button class="drive-btn glass" data-a="${driveOpen ? 'drive' : 'locked'}">${icon('car', 26)}<span>${esc(t('home.drive'))}</span>${driveOpen ? UI.chevron : UI.lock}</button>` : ''}
+    <aside class="home-side glass" aria-label="${esc(t('home.stopOf', { n, total: STAGES.length }))}">
+      <h2 class="section-label">${esc(t('home.stopOf', { n, total: STAGES.length }))}</h2>
+      <div class="stage-list">${stageRows('page')}</div>
+      <button class="feature" data-a="drill"><span class="feature-ico">${UI.bolt}</span><span class="grow"><b>${esc(t('drill.title'))}</b><span class="sub">${esc(t('drill.body'))}</span></span>${UI.chevron}</button>
+    </aside>
   </main>`, { tabs: 'home' });
   on('play', (el) => { warmAudio(); playWithPulse(el); });
   on('start', () => { warmAudio(); startLesson(cur.id); });
@@ -355,6 +378,8 @@ function viewHome() {
   on('locked', () => toast(t('stage.exam.info')));
   on('stages', () => stagesSheet());
   on('info', () => infoSheet(cur.id));
+  on('stage', (el) => { warmAudio(); openStage(el.dataset.id); });
+  on('drill', () => { warmAudio(); begin(buildDrill()); });
 }
 
 function infoSheet(stageId) {
@@ -481,11 +506,11 @@ function revealBox(id, { show = store.get().settings.showText } = {}) {
 // ---- Intro: learn a new phrase (hear it, see the action, meaning, how it sounds)
 function exIntro(item) {
   setTimeout(() => { on('next', () => { store.record(item.id, true); next(); }); });
-  return `<h1 class="prompt">${esc(t('ex.learn'))}</h1>
+  return `<div class="ex"><div class="ex-a"><h1 class="prompt">${esc(t('ex.learn'))}</h1>
     ${heroVisual(item.id)}
-    <div class="audio-row">${playButton(item.id)}${slowButton(item.id)}</div>
-    ${phraseBlock(item.id, { big: true })}
-    ${doBlock(item.id)}
+    <div class="audio-row">${playButton(item.id)}${slowButton(item.id)}</div></div>
+    <div class="ex-b">${phraseBlock(item.id, { big: true })}
+    ${doBlock(item.id)}</div></div>
     <div class="lesson-foot"><button class="btn btn-primary btn-block" data-a="next">${esc(t('ex.gotIt'))}</button></div>`;
 }
 
@@ -514,10 +539,10 @@ function exAct(item, isExam) {
     on('check', () => { if (item.chosen && !item.answered) { item.answered = true; checkAct(item, item.chosen); } });
   });
   const v = item.v || '';
-  return `<h1 class="prompt">${esc(t('ex.act'))}</h1>
+  return `<div class="ex"><div class="ex-a"><h1 class="prompt">${esc(t('ex.act'))}</h1>
     <div class="audio-row">${playButton(item.id, 'play-big', v)}${isExam || item.timed ? '' : slowButton(item.id, v)}</div>
-    ${isExam || item.timed ? '' : revealBox(item.id)}
-    <div class="grid-2">${opts}</div>
+    ${isExam || item.timed ? '' : revealBox(item.id)}</div>
+    <div class="ex-b"><div class="grid-2">${opts}</div></div></div>
     ${item.timed ? '' : `<div class="lesson-foot"><button class="btn btn-primary btn-block" id="checkBtn" data-a="check" aria-disabled="true">${esc(t('ex.check'))}</button></div>`}`;
 }
 
@@ -551,10 +576,9 @@ function exListen(item) {
       result(item, ok);
     });
   });
-  return `<h1 class="prompt">${esc(t('ex.listen'))}</h1>
-    <div class="audio-row">${playButton(item.id)}${slowButton(item.id)}</div>
-    ${nativeOpts ? '' : ''}
-    <div class="options">${opts}</div>
+  return `<div class="ex"><div class="ex-a"><h1 class="prompt">${esc(t('ex.listen'))}</h1>
+    <div class="audio-row">${playButton(item.id, 'play-big')}${slowButton(item.id)}</div></div>
+    <div class="ex-b"><div class="options">${opts}</div></div></div>
     <div class="lesson-foot"><button class="btn btn-primary btn-block" id="checkBtn" data-a="check" aria-disabled="true">${esc(t('ex.check'))}</button></div>`;
 }
 
@@ -587,15 +611,15 @@ function exSpeak(item) {
     on('cant', () => next());
   });
   const say = phraseSay(item.id);
-  return `<h1 class="prompt">${esc(t('ex.speak'))}</h1>
+  return `<div class="ex"><div class="ex-a"><h1 class="prompt">${esc(t('ex.speak'))}</h1>
     <div class="audio-row">${playButton(item.id)}${slowButton(item.id)}</div>
     <p class="marks" id="marks" lang="en">${esc(phraseEn(item.id))}</p>
     ${say ? `<p class="pb-say"><span class="pb-label">${esc(t('ex.howSounds'))}</span>${esc(say)}</p>` : ''}
-    ${isEnglishUi() ? '' : `<p class="pb-tr">${esc(phraseNative(item.id))}</p>`}
-    <div class="speak-zone">
+    ${isEnglishUi() ? '' : `<p class="pb-tr">${esc(phraseNative(item.id))}</p>`}</div>
+    <div class="ex-b"><div class="speak-zone">
       <button class="mic-btn" id="micBtn" data-a="mic" aria-label="${esc(t('ex.tapToSpeak'))}">${UI.mic}</button>
       <p class="mic-label" id="micLabel" aria-live="polite">${esc(t('ex.tapToSpeak'))}</p>
-    </div>
+    </div></div></div>
     <div class="lesson-foot"><button class="text-btn" data-a="cant">${esc(t('ex.cantSpeak'))}</button></div>`;
 }
 
@@ -679,7 +703,9 @@ function finishLesson() {
   if (isExam) return finishFallbackExam(s);
   const missed = [...new Set(s.missed)].slice(0, 6);
   render(`<main class="view done">
+    <div class="split"><div class="col-a">
     <div class="done-visual">${scene(firstId ? (maneuverOf(firstId) === 'stop' ? 'straight' : maneuverOf(firstId)) : 'straight', { animate: !reduceMotion, dur: 3 })}</div>
+    </div><div class="col-b">
     <h1 class="done-title">${esc(isDrill ? t('drill.result', { n: s.right, total: s.items.length }) : t('done.title'))}</h1>
     <div class="stats">
       <div class="stat"><span>${esc(t('done.accuracy'))}</span><b>${acc}%</b></div>
@@ -692,6 +718,7 @@ function finishLesson() {
         : `<button class="btn btn-primary btn-block" data-a="next">${esc(nextStage.exam ? t('drive.start') : t('done.next'))}</button>`}
       <button class="btn btn-ghost btn-block" data-a="home">${esc(t('done.home'))}</button>
     </div>
+    </div></div>
   </main>`);
   chime(true);
   on('next', () => (nextStage.exam ? go('drive') : startLesson(nextStage.id)));
@@ -703,9 +730,11 @@ function finishLesson() {
 // ---------------------------------------------------------------- drive test
 
 function viewDriveIntro() {
-  render(`<main class="view lesson">
+  render(`<main class="view lesson drv-intro">
     <div class="bar"><button class="icon-btn" data-a="home" aria-label="${esc(t('gen.back'))}">${UI.back}</button></div>
+    <div class="split"><div class="col-a">
     <div class="stage-visual">${scene('turnLeft', { animate: !reduceMotion, dur: 3.4 })}</div>
+    </div><div class="col-b">
     <span class="us-pill">${flag(20)}<span>${esc(t('app.badgeSub'))}</span></span>
     <h1 class="page-title">${esc(t('drive.title'))}</h1>
     <p style="color:var(--ink-2)">${esc(t('drive.body'))}</p>
@@ -714,7 +743,8 @@ function viewDriveIntro() {
       <button class="btn btn-accent btn-block" data-a="short" data-autofocus>${esc(t('drive.short'))}</button>
       <button class="btn btn-ghost btn-block" data-a="full">${esc(t('drive.full'))}</button>
     </div>
-  </main>`);
+    </div></div>
+  </main>`, { side: 'drive' });
   on('home', () => go('home'));
   on('how', () => controlsSheet());
   on('short', () => runDrive('short'));
@@ -759,6 +789,7 @@ function viewDriveResult() {
       </div></div>`).join('')
     : `<p class="empty">${esc(t('drive.noMistakes'))}</p>`;
   render(`<main class="view done" style="justify-content:flex-start;gap:20px">
+    <div class="split"><div class="col-a">
     <span class="us-pill">${flag(20)}<span>${esc(t('app.badgeSub'))}</span></span>
     <h1 class="done-title ${r.passed ? 'pass' : 'fail'}">${esc(r.passed ? t('drive.pass') : t('drive.fail'))}</h1>
     <p style="color:var(--ink-2);font-size:var(--t-md)">${esc(t('drive.passBody', { n: r.ok, total: r.total }))} ${r.passed ? '' : esc(t('drive.failBody'))}</p>
@@ -767,12 +798,14 @@ function viewDriveResult() {
       <div class="stat"><span>${esc(t('drive.critical'))}</span><b class="${r.critical ? 'warn' : ''}">${r.critical}</b></div>
       <div class="stat"><span>${esc(t('done.time'))}</span><b>${Math.floor(r.secs / 60)}:${String(r.secs % 60).padStart(2, '0')}</b></div>
     </div>
-    <div><h2 class="section-label">${esc(t('drive.review'))}</h2>${rows}</div>
     <div class="lesson-foot">
       <button class="btn btn-primary btn-block" data-a="again">${esc(t('drive.again'))}</button>
       ${r.missed.length ? `<button class="btn btn-ghost btn-block" data-a="practice">${esc(t('home.practice'))}</button>` : ''}
       <button class="btn btn-ghost btn-block" data-a="home">${esc(t('done.home'))}</button>
     </div>
+    </div><div class="col-b">
+    <div><h2 class="section-label">${esc(t('drive.review'))}</h2>${rows}</div>
+    </div></div>
   </main>`);
   chime(r.passed);
   on('again', () => go('drive'));
@@ -809,8 +842,9 @@ function finishFallbackExam(s) {
 function viewPractice() {
   const weak = weakIds(8);
   const list = weak.length ? weak.map((id) => phraseRow(id)).join('') : `<p class="empty">${esc(t('prc.weakEmpty'))}</p>`;
-  render(`<main class="view has-tabs" style="gap:16px">
+  render(`<main class="view has-tabs prc" style="gap:16px">
     <h1 class="page-title">${esc(t('prc.title'))}</h1>
+    <div class="split"><div class="col-a">
     <button class="feature glass-flat" data-a="drill">
       <span class="feature-ico">${UI.bolt}</span>
       <span class="grow"><b>${esc(t('drill.title'))}</b><span class="sub">${esc(t('drill.body'))}</span></span>${UI.chevron}
@@ -821,8 +855,10 @@ function viewPractice() {
       <button class="row" data-a="book"><span class="row-l">${UI.book}<b>${esc(t('home.phrases'))}</b></span>${UI.chevron}</button>
       <button class="row" data-a="check"><span class="row-l">${icon('exam', 22)}<b>${esc(t('chk.title'))}</b></span>${UI.chevron}</button>
     </div>
+    </div><div class="col-b">
     <h2 class="section-label">${esc(t('prc.weak'))}</h2>
     <div>${list}</div>
+    </div></div>
   </main>`, { tabs: 'practice' });
   on('drill', () => { warmAudio(); begin(buildDrill()); });
   on('mixed', () => { warmAudio(); begin(buildPractice()); });
@@ -843,12 +879,12 @@ function viewPhrases() {
     if (!items.length) return '';
     return `<h2 class="section-label">${esc(t(`stage.${s.id}`))}</h2>${items.map((p) => phraseRow(p.id)).join('')}`;
   }).join('') || `<p class="empty">${esc(t('phr.empty'))}</p>`;
-  render(`<main class="view" style="gap:14px">
+  render(`<main class="view phrs" style="gap:14px">
     <div class="bar"><button class="icon-btn" data-a="back" aria-label="${esc(t('gen.back'))}">${UI.back}</button></div>
     <h1 class="page-title">${esc(t('phr.title'))}</h1>
     <div class="search">${UI.search}<input type="search" data-input="q" placeholder="${esc(t('phr.search'))}" aria-label="${esc(t('phr.search'))}"></div>
-    <div id="groups">${groups('')}</div>
-  </main>`);
+    <div id="groups" class="phr-groups">${groups('')}</div>
+  </main>`, { side: 'phrases' });
   on('back', () => (history.length > 1 ? history.back() : go('practice')));
   on('q', (el) => { document.getElementById('groups').innerHTML = groups(el.value); });
   on('play', (el) => playWithPulse(el));
@@ -857,17 +893,19 @@ function viewPhrases() {
 // ---------------------------------------------------------------- checklist
 
 function viewChecklist() {
-  const sec = (title, keys) => `<h2 class="section-label">${esc(t(title))}</h2><ul class="checks">${keys.map((k) => `<li>${UI.check}<span>${esc(t(k))}</span></li>`).join('')}</ul>`;
-  render(`<main class="view" style="gap:12px">
+  const sec = (title, keys) => `<section class="chk-sec"><h2 class="section-label">${esc(t(title))}</h2><ul class="checks">${keys.map((k) => `<li>${UI.check}<span>${esc(t(k))}</span></li>`).join('')}</ul></section>`;
+  render(`<main class="view chk" style="gap:12px">
     <div class="bar"><button class="icon-btn" data-a="back" aria-label="${esc(t('gen.back'))}">${UI.back}</button></div>
     <span class="us-pill">${flag(20)}<span>${esc(t('app.badgeSub'))}</span></span>
     <h1 class="page-title">${esc(t('chk.title'))}</h1>
+    <div class="chk-grid">
     ${sec('chk.bring', ['chk.permit', 'chk.driver', 'chk.registration', 'chk.insurance', 'chk.glasses'])}
     ${sec('chk.car', ['chk.lights', 'chk.horn', 'chk.tires', 'chk.glass', 'chk.inside'])}
     ${sec('chk.atDmv', ['chk.early', 'chk.wait', 'chk.noHelp', 'chk.ask'])}
+    </div>
     <div class="phr" style="border:0">${playButton('talk.repeat', 'play-sm')}<div class="txt"><span class="en" lang="en">${esc(phraseEn('talk.repeat'))}</span>${phraseSay('talk.repeat') ? `<span class="say">${esc(phraseSay('talk.repeat'))}</span>` : ''}</div></div>
     <p style="color:var(--ink-3);font-size:var(--t-xs)">${esc(t('chk.source'))} ${esc(t('info.p4'))}</p>
-  </main>`);
+  </main>`, { side: 'checklist' });
   on('back', () => (history.length > 1 ? history.back() : go('practice')));
   on('play', (el) => playWithPulse(el));
 }
@@ -877,7 +915,7 @@ function viewChecklist() {
 function viewProfile() {
   const s = store.get();
   const b = s.driveBest;
-  render(`<main class="view has-tabs" style="gap:16px">
+  render(`<main class="view has-tabs pro" style="gap:16px">
     <div class="bar"><h1 class="page-title">${esc(s.name || t('pro.title'))}</h1><button class="icon-btn" data-a="prefs" aria-label="${esc(t('set.title'))}">${UI.gear}</button></div>
     <div class="big-stats">
       <div class="stat"><span>${esc(t('pro.ready'))}</span><b>${readiness()}%</b></div>
@@ -885,13 +923,16 @@ function viewProfile() {
       <div class="stat"><span>${esc(t('pro.learned'))}</span><b>${learnedCount()} / ${LEARNABLE.length}</b></div>
       <div class="stat"><span>${esc(t('pro.bestDrive'))}</span><b class="${b && b.passed ? 'okc' : ''}">${b ? `${b.ok}/${b.total}` : '—'}</b></div>
     </div>
+    <div class="split"><div class="col-a">
     <div class="stage-list">${stageRows('page')}</div>
+    </div><div class="col-b">
     <div class="list">
       <button class="row" data-a="check"><span>${esc(t('chk.title'))}</span>${UI.chevron}</button>
       <button class="row" data-a="how"><span>${esc(t('set.howItWorks'))}</span>${UI.chevron}</button>
       <button class="row" data-a="terms"><span>${esc(t('set.terms'))}</span>${UI.chevron}</button>
       <button class="row" data-a="privacy"><span>${esc(t('set.privacy'))}</span>${UI.chevron}</button>
     </div>
+    </div></div>
   </main>`, { tabs: 'profile' });
   on('prefs', () => go('prefs'));
   on('stage', (el) => openStage(el.dataset.id));
@@ -912,10 +953,10 @@ function viewPrefs() {
     ['mix', t('set.voiceMix')], ['w1', t('set.voiceWoman', { n: 1 })], ['w2', t('set.voiceWoman', { n: 2 })],
     ['m1', t('set.voiceMan', { n: 1 })], ['m2', t('set.voiceMan', { n: 2 })],
   ];
-  render(`<main class="view" style="gap:14px">
+  render(`<main class="view prefs" style="gap:14px">
     <div class="bar"><button class="icon-btn" data-a="back" aria-label="${esc(t('gen.back'))}">${UI.back}</button></div>
     <h1 class="page-title">${esc(t('set.title'))}</h1>
-
+    <div class="split"><div class="col-a">
     <h2 class="section-label">${esc(t('set.voices'))}</h2>
     <div class="list" role="radiogroup" aria-label="${esc(t('set.voices'))}">
       ${voices.map(([k, label]) => `<button class="row" role="radio" aria-checked="${(s.settings.voice || 'mix') === k}" data-a="voice" data-k="${k}"><span>${esc(label)}</span><span class="val">${(s.settings.voice || 'mix') === k ? UI.check : UI.speaker}</span></button>`).join('')}
@@ -926,6 +967,7 @@ function viewPrefs() {
       ${['slow', 'normal', 'fast'].map((k) => `<button data-a="speed" data-k="${k}" aria-pressed="${s.settings.speed === k}">${esc(t(`set.${k}`))}</button>`).join('')}
     </div>
 
+    </div><div class="col-b">
     <div class="list">
       <button class="row" data-a="lang"><span>${esc(t('set.language'))}</span><span class="val">${esc(lang ? lang.nativeName : 'English')} ${UI.chevron}</span></button>
       <div class="row"><label for="nameEdit">${esc(t('set.name'))}</label><input id="nameEdit" class="inline-input" data-input="name" value="${esc(s.name)}" placeholder="${esc(t('onb.namePlaceholder'))}" maxlength="30"></div>
@@ -946,7 +988,8 @@ function viewPrefs() {
 
     <div class="list"><button class="row" data-a="reset" style="color:var(--bad)"><span>${esc(t('set.reset'))}</span></button></div>
     <p style="color:var(--ink-3);font-size:var(--t-xs);text-align:center;padding:8px 0">Frenu · ${esc(t('set.version', { v: VERSION }))} · © 2026 Patron LLC</p>
-  </main>`);
+    </div></div>
+  </main>`, { side: 'prefs' });
   on('back', () => go('profile'));
   on('voice', (el) => {
     const k = el.dataset.k;
@@ -980,7 +1023,7 @@ function viewLegal(which) {
   render(`<main class="view" style="gap:10px">
     <div class="bar"><button class="icon-btn" data-a="back" aria-label="${esc(t('gen.back'))}">${UI.back}</button>${isEnglishUi() ? '' : `<span class="chip">${esc(t('gen.legalEnglish'))}</span>`}</div>
     <article class="legal en" lang="en">${which === 'terms' ? TERMS : PRIVACY}</article>
-  </main>`);
+  </main>`, { side: 'profile' });
   on('back', () => (history.length > 1 ? history.back() : go('profile')));
 }
 
